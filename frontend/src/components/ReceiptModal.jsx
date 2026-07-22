@@ -193,23 +193,23 @@ export default function ReceiptModal({ receipt, onClose }) {
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <a
-            href={`${EXPLORER_ACCOUNT_BASE_URL}${receipt.driver}`}
+            href={`https://stellar.expert/explorer/testnet/tx/${receipt.txHash}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"
             style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
           >
-            Stellar Expert Account <ExternalLink size={16} />
+            View Tx on Stellar Expert <ExternalLink size={16} />
           </a>
 
           <a
-            href={SOROBAN_LAB_URL}
+            href={`${EXPLORER_ACCOUNT_BASE_URL}${receipt.driver}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary"
             style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
           >
-            Soroban Contract Lab <ExternalLink size={16} />
+            Stellar Account <ExternalLink size={16} />
           </a>
         </div>
 
