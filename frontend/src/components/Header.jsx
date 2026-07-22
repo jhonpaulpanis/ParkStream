@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { stellarState, DEMO_ACCOUNTS, CONTRACT_ADDRESS } from '../services/stellarService';
-import { Car, Building2, Terminal, Wallet, Sparkles, RefreshCw, CheckCircle2, ExternalLink } from 'lucide-react';
+import { stellarState, CONTRACT_ADDRESS } from '../services/stellarService';
+import { Car, Building2, Terminal, RefreshCw, ExternalLink, ShieldCheck } from 'lucide-react';
 
 export default function Header({ currentView, setCurrentView, activeWallet, setActiveWallet, onOpenScanner }) {
   const [driverBalance, setDriverBalance] = useState(stellarState.accounts.DRIVER.balanceUSDC);
@@ -23,108 +23,122 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
     }, 600);
   };
 
-  const activeAccount = activeWallet === 'driver' ? stellarState.accounts.DRIVER : stellarState.accounts.OPERATOR;
+  const scrollToSection = (id) => {
+    if (currentView !== 'landing') {
+      setCurrentView('landing');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const currentBalance = activeWallet === 'driver' ? driverBalance : operatorBalance;
 
   return (
-    <header className="glass-panel" style={{ borderRadius: '0 0 20px 20px', borderTop: 'none', padding: '16px 24px', marginBottom: '24px' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+      background: 'rgba(8, 12, 20, 0.85)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      borderBottom: '1px solid var(--border-subtle)',
+      padding: '14px 24px'
+    }}>
+      <div style={{
+        maxWidth: '1280px',
+        margin: '0 auto',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
         
         {/* Logo & Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div 
+          onClick={() => setCurrentView('landing')}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}
+        >
           <div style={{
-            width: '42px',
-            height: '42px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)',
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #00F2FE 0%, #0099FF 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(0, 242, 254, 0.4)'
+            color: '#040D1A',
+            fontWeight: 900,
+            fontSize: '1.2rem',
+            boxShadow: '0 0 16px rgba(0, 242, 254, 0.4)'
           }}>
-            <Car size={24} color="#040D1A" strokeWidth={2.5} />
+            P
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.4rem', fontWeight: 800, letterSpacing: '-0.02em', margin: 0 }} className="gradient-text-cyan">
-                ParkStream
-              </h1>
-              <span className="pulse-badge active">
-                <span className="pulse-dot"></span>
-                Stellar Soroban
-              </span>
-            </div>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>
-              Per-Minute Metered Payments in USDC
-            </p>
-          </div>
+          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#FFFFFF' }}>
+            ParkStream<span style={{ color: '#00F2FE' }}>.</span>
+          </span>
         </div>
 
-        {/* View Switcher Tabs */}
-        <div style={{
-          display: 'flex',
-          background: 'rgba(0, 0, 0, 0.4)',
-          padding: '4px',
-          borderRadius: '12px',
-          border: '1px solid var(--border-subtle)'
-        }}>
+        {/* Center Nav Items */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
           <button
-            onClick={() => setCurrentView('driver')}
+            onClick={() => scrollToSection('home')}
             style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              background: currentView === 'driver' ? 'linear-gradient(135deg, #00F2FE 0%, #0099FF 100%)' : 'transparent',
-              color: currentView === 'driver' ? '#040D1A' : 'var(--text-secondary)',
-              fontWeight: currentView === 'driver' ? 700 : 500,
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
+              background: 'transparent',
+              color: currentView === 'landing' ? '#FFFFFF' : 'var(--text-secondary)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
             }}
           >
-            <Car size={16} /> Driver App
+            Home
           </button>
 
           <button
-            onClick={() => setCurrentView('operator')}
+            onClick={() => scrollToSection('features')}
             style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              background: currentView === 'operator' ? 'linear-gradient(135deg, #00E676 0%, #00B0FF 100%)' : 'transparent',
-              color: currentView === 'operator' ? '#04140B' : 'var(--text-secondary)',
-              fontWeight: currentView === 'operator' ? 700 : 500,
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
+              background: 'transparent',
+              color: 'var(--text-secondary)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
             }}
           >
-            <Building2 size={16} /> Operator Dashboard
+            Features
           </button>
 
           <button
-            onClick={() => setCurrentView('inspector')}
+            onClick={() => scrollToSection('developers')}
             style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              background: currentView === 'inspector' ? 'rgba(139, 92, 246, 0.3)' : 'transparent',
-              color: currentView === 'inspector' ? '#C084FC' : 'var(--text-secondary)',
-              fontWeight: currentView === 'inspector' ? 700 : 500,
-              fontSize: '0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              border: currentView === 'inspector' ? '1px solid rgba(139, 92, 246, 0.5)' : '1px solid transparent'
+              background: 'transparent',
+              color: 'var(--text-secondary)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
             }}
           >
-            <Terminal size={16} /> Soroban Inspector
+            Developers
           </button>
-        </div>
 
-        {/* Account & Wallet Section */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            onClick={() => scrollToSection('about')}
+            style={{
+              background: 'transparent',
+              color: 'var(--text-secondary)',
+              fontWeight: 600,
+              fontSize: '0.85rem'
+            }}
+          >
+            About
+          </button>
+        </nav>
+
+        {/* Interactive App Mode Switcher & Action Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           
-          {/* Quick Faucet for Driver */}
+          {/* Quick Faucet Button */}
           {activeWallet === 'driver' && (
             <button
               onClick={handleFaucet}
@@ -133,56 +147,78 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
               style={{
                 background: 'rgba(0, 242, 254, 0.1)',
                 border: '1px solid rgba(0, 242, 254, 0.3)',
-                color: 'var(--color-cyan)',
-                borderRadius: '10px',
-                padding: '8px 12px',
-                fontSize: '0.8rem',
+                color: '#00F2FE',
+                borderRadius: '8px',
+                padding: '6px 12px',
+                fontSize: '0.75rem',
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
               }}
             >
-              <RefreshCw size={14} className={faucetLoading ? 'animate-spin' : ''} />
-              + $25 USDC Faucet
+              <RefreshCw size={12} className={faucetLoading ? 'animate-spin' : ''} />
+              + $25 USDC Faucet (${currentBalance.toFixed(2)})
             </button>
           )}
 
-          {/* Account Selector Badge */}
-          <div style={{
-            background: 'rgba(15, 23, 42, 0.9)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '12px',
-            padding: '6px 14px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px'
-          }}>
-            <select
-              value={activeWallet}
-              onChange={(e) => setActiveWallet(e.target.value)}
-              style={{
-                background: 'transparent',
-                color: 'var(--text-primary)',
-                border: 'none',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                cursor: 'pointer'
-              }}
-            >
-              <option value="driver">🚗 Maria (Driver Wallet)</option>
-              <option value="operator">🏢 Makati Corp (Operator Wallet)</option>
-            </select>
+          {/* Operator Hub Button */}
+          <button
+            onClick={() => setCurrentView('operator')}
+            style={{
+              background: currentView === 'operator' ? 'rgba(0, 242, 254, 0.25)' : 'rgba(0, 242, 254, 0.08)',
+              border: '1px solid rgba(0, 242, 254, 0.3)',
+              color: '#00F2FE',
+              borderRadius: '9999px',
+              padding: '6px 14px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00E676' }}></span>
+            <span>Operator Hub</span>
+          </button>
 
-            <div style={{ height: '16px', width: '1px', background: 'var(--border-subtle)' }} />
+          {/* GET STARTED Primary Purple Button */}
+          <button
+            onClick={() => setCurrentView('driver')}
+            style={{
+              background: 'linear-gradient(135deg, #7C3AED 0%, #6366F1 100%)',
+              color: '#FFFFFF',
+              borderRadius: '9999px',
+              padding: '8px 18px',
+              fontSize: '0.8rem',
+              fontWeight: 800,
+              letterSpacing: '0.04em',
+              boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)'
+            }}
+          >
+            GET STARTED
+          </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>USDC:</span>
-              <span className="mono" style={{ fontWeight: 700, color: 'var(--color-emerald)', fontSize: '0.9rem' }}>
-                ${currentBalance.toFixed(2)}
-              </span>
-            </div>
-          </div>
+          {/* Soroban Inspector View Toggle */}
+          <button
+            onClick={() => setCurrentView(currentView === 'inspector' ? 'landing' : 'inspector')}
+            title="Toggle Soroban Smart Contract Inspector"
+            style={{
+              background: currentView === 'inspector' ? 'rgba(192, 132, 252, 0.2)' : 'transparent',
+              border: '1px solid var(--border-subtle)',
+              color: '#C084FC',
+              borderRadius: '8px',
+              padding: '6px 10px',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <Terminal size={14} />
+            <span>Inspector</span>
+          </button>
 
         </div>
 

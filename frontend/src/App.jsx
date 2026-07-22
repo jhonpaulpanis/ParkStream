@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
+import LandingPage from './components/LandingPage';
 import DriverApp from './components/DriverApp';
 import OperatorDashboard from './components/OperatorDashboard';
 import ContractInspector from './components/ContractInspector';
 import QRScannerModal from './components/QRScannerModal';
 import ReceiptModal from './components/ReceiptModal';
 import { stellarState, CONTRACT_ADDRESS } from './services/stellarService';
-import { ShieldCheck, ExternalLink, Heart } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('driver'); // 'driver', 'operator', 'inspector'
+  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'driver', 'operator', 'inspector'
   const [activeWallet, setActiveWallet] = useState('driver'); // 'driver', 'operator'
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [selectedReceipt, setSelectedReceipt] = useState(null);
@@ -49,21 +50,36 @@ export default function App() {
 
       {/* Main Content Body */}
       <main style={{ flex: 1 }}>
-        {currentView === 'driver' && (
-          <DriverApp
+        {currentView === 'landing' && (
+          <LandingPage
+            onStartDemo={() => setCurrentView('driver')}
+            onOpenOperator={() => setCurrentView('operator')}
+            onOpenInspector={() => setCurrentView('inspector')}
             onOpenScanner={() => setIsScannerOpen(true)}
-            onSelectReceipt={(receipt) => setSelectedReceipt(receipt)}
           />
+        )}
+
+        {currentView === 'driver' && (
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px' }}>
+            <DriverApp
+              onOpenScanner={() => setIsScannerOpen(true)}
+              onSelectReceipt={(receipt) => setSelectedReceipt(receipt)}
+            />
+          </div>
         )}
 
         {currentView === 'operator' && (
-          <OperatorDashboard
-            onOpenScanner={() => setIsScannerOpen(true)}
-          />
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px' }}>
+            <OperatorDashboard
+              onOpenScanner={() => setIsScannerOpen(true)}
+            />
+          </div>
         )}
 
         {currentView === 'inspector' && (
-          <ContractInspector />
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px' }}>
+            <ContractInspector />
+          </div>
         )}
       </main>
 
@@ -83,11 +99,11 @@ export default function App() {
       <footer style={{
         background: 'rgba(8, 12, 20, 0.95)',
         borderTop: '1px solid var(--border-subtle)',
-        padding: '24px 0',
+        padding: '32px 0',
         marginTop: 'auto'
       }}>
         <div style={{
-          maxWidth: '1200px',
+          maxWidth: '1280px',
           margin: '0 auto',
           padding: '0 24px',
           display: 'flex',
@@ -99,12 +115,12 @@ export default function App() {
           color: 'var(--text-muted)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, color: 'white' }}>ParkStream</span>
+            <span style={{ fontWeight: 800, color: 'white' }}>ParkStream.</span>
             <span>•</span>
-            <span>Per-minute metered parking on Stellar USDC</span>
+            <span>Per-minute metered parking payments on Stellar USDC</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <a
               href="https://stellar.org"
               target="_blank"
@@ -117,7 +133,7 @@ export default function App() {
               href={`https://lab.stellar.org/r/testnet/contract/${CONTRACT_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: 'var(--color-cyan)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}
+              style={{ color: '#00F2FE', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}
             >
               Soroban Contract <ExternalLink size={12} />
             </a>
