@@ -121,14 +121,14 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Freighter Tokens (Testnet)</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Meter Rate & On-Chain Balance</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00E676' }}>
-                ${driverBalance.toFixed(2)} USDC
+              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00E676' }} title="Stable Fiat Parking Meter Rate Unit ($0.10/min)">
+                ${driverBalance.toFixed(2)} USDC Meter
               </span>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>|</span>
-              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00F2FE' }}>
-                {(stellarState.accounts.DRIVER.balanceXLM || 10000).toLocaleString()} XLM
+              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00F2FE' }} title="Live Stellar Horizon Testnet Reserve">
+                {(stellarState.accounts.DRIVER.balanceXLM || 10000).toLocaleString()} XLM (Live Testnet)
               </span>
             </div>
           </div>
