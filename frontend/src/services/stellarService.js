@@ -26,35 +26,38 @@ export const EXPLORER_BASE_URL = EXPLORER_TX_BASE_URL;
 
 export const TARGET_TESTNET_ACCOUNT = "GAANT3ETP7B3HRWVXV5UID6J6WX5GEZKDJA5SXT4FBJAYBL64HI4MBUM";
 
+// Standard Stellar Base Fee (100 stroops = 0.00001 XLM Max Fee on Horizon)
+export const STELLAR_BASE_FEE = "100";
+
 // Default Demo Accounts
 export const DEMO_ACCOUNTS = {
   DRIVER: {
     name: "Freighter Account (GAANT...MBUM)",
     address: TARGET_TESTNET_ACCOUNT,
     role: "driver",
-    balanceUSDC: 50.00,
-    balanceXLM: 10000.00,
+    balanceUSDC: 50,
+    balanceXLM: 10000,
     avatar: "🚗"
   },
   OPERATOR: {
     name: "Makati Parking Corp (Operator)",
     address: OPERATOR_ADDRESS,
     role: "operator",
-    balanceUSDC: 1250.80,
-    balanceXLM: 5000.00,
+    balanceUSDC: 1250,
+    balanceXLM: 5000,
     avatar: "🏢"
   }
 };
 
-// Parking Lots Initialized in the Contract
+// Parking Lots Initialized with Whole Number Parking Rates ($1, $2, $3 USDC/min)
 export const INITIAL_PARKING_LOTS = [
   {
     id: 1,
     name: "Makati Central Commercial Lot #1",
     location: "Ayala Ave / Paseo de Roxas, Makati",
     operator: OPERATOR_ADDRESS,
-    ratePerMinute: 1000000, // 0.1 USDC/min (in stroops: 1,000,000 stroops = 0.1 USDC with 7 decimals)
-    rateFormatted: "0.10",
+    ratePerMinute: 10000000, // $1 USDC/min (in stroops: 10,000,000)
+    rateFormatted: "1",
     capacity: 120,
     occupied: 42,
     activeDriversCount: 1,
@@ -65,8 +68,8 @@ export const INITIAL_PARKING_LOTS = [
     name: "BGC High Street Underground Garage #2",
     location: "5th Ave, Bonifacio Global City, Taguig",
     operator: OPERATOR_ADDRESS,
-    ratePerMinute: 1500000, // 0.15 USDC/min (1,500,000 stroops)
-    rateFormatted: "0.15",
+    ratePerMinute: 20000000, // $2 USDC/min (20,000,000 stroops)
+    rateFormatted: "2",
     capacity: 250,
     occupied: 188,
     activeDriversCount: 0,
@@ -77,8 +80,8 @@ export const INITIAL_PARKING_LOTS = [
     name: "Ortigas Tech Hub Surface Lot #3",
     location: "Julia Vargas Ave, Ortigas Center, Pasig",
     operator: OPERATOR_ADDRESS,
-    ratePerMinute: 800000, // 0.08 USDC/min (800,000 stroops)
-    rateFormatted: "0.08",
+    ratePerMinute: 30000000, // $3 USDC/min (30,000,000 stroops)
+    rateFormatted: "3",
     capacity: 85,
     occupied: 29,
     activeDriversCount: 0,
@@ -86,9 +89,9 @@ export const INITIAL_PARKING_LOTS = [
   }
 ];
 
-// Helper to format stroops (7 decimals) to USDC string
+// Helper to format stroops (7 decimals) to whole number USDC string
 export function stroopsToUSDC(stroops) {
-  return (Number(stroops) / 10000000).toFixed(4);
+  return Math.round(Number(stroops) / 10000000).toString();
 }
 
 export function usdcToStroops(usdcAmount) {
@@ -325,14 +328,14 @@ class StateStore {
       try {
         const sourceAccount = await server.loadAccount(driverAddress);
         const tx = new TransactionBuilder(sourceAccount, {
-          fee: "1000",
+          fee: STELLAR_BASE_FEE,
           networkPassphrase: Networks.TESTNET
         })
         .addOperation(
           Operation.payment({
             destination: OPERATOR_ADDRESS,
             asset: Asset.native(),
-            amount: "0.00001" // Micro-entry fee on Testnet
+            amount: "1" // Whole 1 XLM entry payment
           })
         )
         .addMemo(Memo.text(`ParkStream Entry Lot#${lotId}`))
@@ -362,14 +365,14 @@ class StateStore {
         const relayKp = Keypair.fromSecret('SBLNLV3HNBT7QJLDH2FIIAJT5VHG6SOH3JM6ZZS4EJPWU74WR657PFJX');
         const relayAccount = await server.loadAccount(relayKp.publicKey());
         const tx = new TransactionBuilder(relayAccount, {
-          fee: "1000",
+          fee: STELLAR_BASE_FEE,
           networkPassphrase: Networks.TESTNET
         })
         .addOperation(
           Operation.payment({
             destination: driverAddress.startsWith('G') ? driverAddress : TARGET_TESTNET_ACCOUNT,
             asset: Asset.native(),
-            amount: "0.00001"
+            amount: "1" // Whole 1 XLM entry payment
           })
         )
         .addMemo(Memo.text(`ParkStream Entry Lot#${lotId}`))
@@ -444,8 +447,9 @@ class StateStore {
     const elapsedSeconds = Math.max(1, nowSec - session.startTimeSec);
     const durationMinutes = Math.floor(elapsedSeconds / 60) + 1; // contract logic: round up, min 1
     const feeStroops = durationMinutes * session.ratePerMinute;
-    const feeUSDC = (feeStroops / 10000000);
-    const feeXLM = (durationMinutes * 0.1).toFixed(4); // 0.1 XLM per minute micro-fee on Testnet
+    const feeUSDCNum = Math.round(feeStroops / 10000000);
+    const feeUSDC = feeUSDCNum.toString();
+    const feeXLM = Math.max(1, durationMinutes * 1).toString(); // Whole XLM payment (e.g. 1 XLM, 2 XLM)
 
     let txHash = "";
     let ledgerSequence = 3740285 + Math.floor(Math.random() * 100);
@@ -458,7 +462,7 @@ class StateStore {
         
         // Build real Stellar payment transaction envelope
         const tx = new TransactionBuilder(sourceAccount, {
-          fee: "1000",
+          fee: STELLAR_BASE_FEE,
           networkPassphrase: Networks.TESTNET
         })
         .addOperation(
@@ -496,7 +500,7 @@ class StateStore {
         const relayKp = Keypair.fromSecret('SBLNLV3HNBT7QJLDH2FIIAJT5VHG6SOH3JM6ZZS4EJPWU74WR657PFJX');
         const relayAccount = await server.loadAccount(relayKp.publicKey());
         const tx = new TransactionBuilder(relayAccount, {
-          fee: "1000",
+          fee: STELLAR_BASE_FEE,
           networkPassphrase: Networks.TESTNET
         })
         .addOperation(
@@ -524,9 +528,9 @@ class StateStore {
     }
 
     // Deduct local USDC balance
-    this.accounts.DRIVER.balanceUSDC = Math.max(0, this.accounts.DRIVER.balanceUSDC - feeUSDC);
+    this.accounts.DRIVER.balanceUSDC = Math.max(0, this.accounts.DRIVER.balanceUSDC - feeUSDCNum);
     this.freighterUsdcBalance = this.accounts.DRIVER.balanceUSDC;
-    this.accounts.OPERATOR.balanceUSDC += feeUSDC;
+    this.accounts.OPERATOR.balanceUSDC += feeUSDCNum;
 
     session.active = false;
     if (lot) {

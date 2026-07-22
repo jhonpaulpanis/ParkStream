@@ -7,14 +7,14 @@ async function run() {
   const account = await server.loadAccount(relayKp.publicKey());
   
   const tx = new TransactionBuilder(account, {
-    fee: '1000',
+    fee: '100',
     networkPassphrase: Networks.TESTNET
   })
   .addOperation(
     Operation.payment({
       destination: 'GAANT3ETP7B3HRWVXV5UID6J6WX5GEZKDJA5SXT4FBJAYBL64HI4MBUM',
       asset: Asset.native(),
-      amount: '0.1000000'
+      amount: '1'
     })
   )
   .addMemo(Memo.text('ParkStream Stellar Session'))
