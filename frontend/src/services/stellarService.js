@@ -4,7 +4,7 @@
  * Explorer: https://lab.stellar.org/r/testnet/contract/CC54GXK5TCO54O4HTS3H7KCBKZH6XV733SDERTPVBHOHW3ZJRQO7D325
  */
 
-import { Horizon, TransactionBuilder, Networks, Operation, Asset } from '@stellar/stellar-sdk';
+import { Horizon, TransactionBuilder, Networks, Operation, Asset, Keypair, Memo } from '@stellar/stellar-sdk';
 import { isConnected, requestAccess, getAddress, signTransaction, signMessage } from '@stellar/freighter-api';
 
 export const CONTRACT_ADDRESS = "CC54GXK5TCO54O4HTS3H7KCBKZH6XV733SDERTPVBHOHW3ZJRQO7D325";
@@ -353,7 +353,7 @@ class StateStore {
             amount: "0.00001" // Micro-entry fee on Testnet
           })
         )
-        .addMemo(TransactionBuilder.memoText(`ParkStream Entry Lot#${lotId}`))
+        .addMemo(Memo.text(`ParkStream Entry Lot#${lotId}`))
         .setTimeout(180)
         .build();
 
@@ -390,7 +390,7 @@ class StateStore {
             amount: "0.00001"
           })
         )
-        .addMemo(TransactionBuilder.memoText(`ParkStream Entry Lot#${lotId}`))
+        .addMemo(Memo.text(`ParkStream Entry Lot#${lotId}`))
         .setTimeout(180)
         .build();
 
@@ -482,7 +482,7 @@ class StateStore {
             amount: feeXLM
           })
         )
-        .addMemo(TransactionBuilder.memoText(`ParkStream Exit Lot#${lotId}`))
+        .addMemo(Memo.text(`ParkStream Exit Lot#${lotId}`))
         .setTimeout(180)
         .build();
 
@@ -520,7 +520,7 @@ class StateStore {
             amount: feeXLM
           })
         )
-        .addMemo(TransactionBuilder.memoText(`ParkStream Exit Lot#${lotId}`))
+        .addMemo(Memo.text(`ParkStream Exit Lot#${lotId}`))
         .setTimeout(180)
         .build();
 
