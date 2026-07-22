@@ -122,7 +122,7 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Meter Rate & On-Chain Balance</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '2px' }}>
               <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00E676' }} title="Stable Fiat Parking Meter Rate Unit ($0.10/min)">
                 ${driverBalance.toFixed(2)} USDC Meter
               </span>
@@ -133,72 +133,28 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
             </div>
           </div>
 
-          {!freighterConnected ? (
-            <button
-              onClick={async () => {
-                await stellarState.connectFreighter();
-              }}
-              style={{
-                background: 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)',
-                color: '#040D1A',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                padding: '10px 20px',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 15px rgba(0, 242, 254, 0.3)',
-                cursor: 'pointer'
-              }}
-            >
-              <Wallet size={16} color="#040D1A" />
-              <span>Connect Freighter</span>
-            </button>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button
-                onClick={async () => {
-                  if (freighterKey) {
-                    await stellarState.fetchHorizonBalances(freighterKey);
-                  }
-                }}
-                title="Sync live Horizon balance"
-                style={{
-                  background: 'rgba(0, 242, 254, 0.1)',
-                  border: '1px solid rgba(0, 242, 254, 0.3)',
-                  color: '#00F2FE',
-                  padding: '8px 12px',
-                  borderRadius: '8px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600
-                }}
-              >
-                Sync Balance
-              </button>
-              <a
-                href="https://freighter.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--text-secondary)',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  padding: '8px 14px',
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <span>Freighter.app</span>
-                <ExternalLink size={12} />
-              </a>
-            </div>
-          )}
+          <a
+            href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View Account on Stellar Expert"
+            style={{
+              background: 'rgba(0, 242, 254, 0.1)',
+              border: '1px solid rgba(0, 242, 254, 0.3)',
+              color: '#00F2FE',
+              padding: '8px 14px',
+              borderRadius: '10px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              textDecoration: 'none'
+            }}
+          >
+            <span>Stellar Expert</span>
+            <ExternalLink size={14} />
+          </a>
         </div>
       </div>
 
@@ -453,35 +409,28 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <button
-              onClick={() => {
-                stellarState.fetchHorizonTransactions(currentDriver);
-                stellarState.fetchHorizonBalances(currentDriver);
-              }}
-              style={{
-                background: 'rgba(0, 242, 254, 0.12)',
-                border: '1px solid rgba(0, 242, 254, 0.3)',
-                color: '#00F2FE',
-                borderRadius: '8px',
-                padding: '6px 14px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              Refresh Stellar Horizon
-            </button>
-            <a
-              href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary"
-              style={{ fontSize: '0.8rem', textDecoration: 'none' }}
-            >
-              Open Explorer <ExternalLink size={12} />
-            </a>
-          </div>
+          <button
+            onClick={() => {
+              stellarState.fetchHorizonTransactions(currentDriver);
+              stellarState.fetchHorizonBalances(currentDriver);
+            }}
+            style={{
+              background: 'rgba(0, 242, 254, 0.12)',
+              border: '1px solid rgba(0, 242, 254, 0.3)',
+              color: '#00F2FE',
+              borderRadius: '8px',
+              padding: '8px 16px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <Sparkles size={14} />
+            <span>Refresh Transactions</span>
+          </button>
         </div>
 
         {stellarState.stellarTransactions.length === 0 ? (

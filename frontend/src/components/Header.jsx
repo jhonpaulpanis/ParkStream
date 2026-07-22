@@ -108,209 +108,95 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
         </div>
 
         {/* Center Nav Items */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <button
-            onClick={() => scrollToSection('home')}
+            onClick={() => setCurrentView('landing')}
             style={{
               background: 'transparent',
               color: currentView === 'landing' ? '#FFFFFF' : 'var(--text-secondary)',
               fontWeight: 600,
-              fontSize: '0.85rem'
+              fontSize: '0.85rem',
+              cursor: 'pointer'
             }}
           >
             Home
           </button>
 
           <button
-            onClick={() => scrollToSection('features')}
+            onClick={() => setCurrentView('driver')}
             style={{
-              background: 'transparent',
-              color: 'var(--text-secondary)',
+              background: currentView === 'driver' ? 'rgba(0, 242, 254, 0.15)' : 'transparent',
+              color: currentView === 'driver' ? '#00F2FE' : 'var(--text-secondary)',
               fontWeight: 600,
-              fontSize: '0.85rem'
+              fontSize: '0.85rem',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer'
             }}
           >
-            Features
+            Driver App
           </button>
 
-          <button
-            onClick={() => scrollToSection('developers')}
-            style={{
-              background: 'transparent',
-              color: 'var(--text-secondary)',
-              fontWeight: 600,
-              fontSize: '0.85rem'
-            }}
-          >
-            Developers
-          </button>
-
-          <button
-            onClick={() => scrollToSection('about')}
-            style={{
-              background: 'transparent',
-              color: 'var(--text-secondary)',
-              fontWeight: 600,
-              fontSize: '0.85rem'
-            }}
-          >
-            About
-          </button>
-        </nav>
-
-        {/* Interactive App Mode Switcher & Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          
-          {/* Quick Faucet Button */}
-          {activeWallet === 'driver' && (
-            <button
-              onClick={handleFaucet}
-              disabled={faucetLoading}
-              title="Top up Testnet USDC balance"
-              style={{
-                background: 'rgba(0, 242, 254, 0.1)',
-                border: '1px solid rgba(0, 242, 254, 0.3)',
-                color: '#00F2FE',
-                borderRadius: '8px',
-                padding: '6px 12px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <RefreshCw size={12} className={faucetLoading ? 'animate-spin' : ''} />
-              + $25 USDC Faucet (${currentBalance.toFixed(2)})
-            </button>
-          )}
-
-          {/* Operator Hub Button */}
           <button
             onClick={() => setCurrentView('operator')}
             style={{
-              background: currentView === 'operator' ? 'rgba(0, 242, 254, 0.25)' : 'rgba(0, 242, 254, 0.08)',
-              border: '1px solid rgba(0, 242, 254, 0.3)',
-              color: '#00F2FE',
-              borderRadius: '9999px',
-              padding: '6px 14px',
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
+              background: currentView === 'operator' ? 'rgba(0, 242, 254, 0.15)' : 'transparent',
+              color: currentView === 'operator' ? '#00F2FE' : 'var(--text-secondary)',
+              fontWeight: 600,
+              fontSize: '0.85rem',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer'
             }}
           >
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00E676' }}></span>
-            <span>Operator Hub</span>
+            Operator Hub
           </button>
 
-          {/* Connect Freighter / Connected Wallet Button */}
-          {!freighterConnected ? (
-            <button
-              onClick={handleConnectFreighter}
-              disabled={connectLoading}
-              style={{
-                background: 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)',
-                color: '#040D1A',
-                borderRadius: '9999px',
-                padding: '8px 18px',
-                fontSize: '0.8rem',
-                fontWeight: 800,
-                letterSpacing: '0.03em',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 0 20px rgba(0, 242, 254, 0.35)',
-                cursor: 'pointer'
-              }}
-            >
-              <Wallet size={14} color="#040D1A" strokeWidth={2.5} />
-              <span>{connectLoading ? 'CONNECTING...' : 'CONNECT FREIGHTER'}</span>
-            </button>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <button
-                onClick={handleDisconnectFreighter}
-                title={`Click to disconnect Freighter (${freighterKey})`}
-                style={{
-                  background: 'rgba(0, 230, 118, 0.15)',
-                  border: '1px solid rgba(0, 230, 118, 0.4)',
-                  color: '#00E676',
-                  borderRadius: '9999px',
-                  padding: '6px 14px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  cursor: 'pointer'
-                }}
-              >
-                <CheckCircle2 size={14} color="#00E676" />
-                <span>Freighter ({freighterKey.slice(0, 4)}...{freighterKey.slice(-4)})</span>
-              </button>
-              <a
-                href={`https://stellar.expert/explorer/testnet/account/${freighterKey}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="View Account on Stellar Expert"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--text-secondary)',
-                  borderRadius: '9999px',
-                  padding: '6px 10px',
-                  fontSize: '0.75rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  textDecoration: 'none'
-                }}
-              >
-                <ExternalLink size={12} />
-              </a>
-            </div>
-          )}
-
-          {/* GET STARTED Primary Purple Button */}
-          <button
-            onClick={() => setCurrentView('driver')}
-            style={{
-              background: 'linear-gradient(135deg, #7C3AED 0%, #6366F1 100%)',
-              color: '#FFFFFF',
-              borderRadius: '9999px',
-              padding: '8px 18px',
-              fontSize: '0.8rem',
-              fontWeight: 800,
-              letterSpacing: '0.04em',
-              boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)'
-            }}
-          >
-            GET STARTED
-          </button>
-
-          {/* Soroban Inspector View Toggle */}
           <button
             onClick={() => setCurrentView(currentView === 'inspector' ? 'landing' : 'inspector')}
-            title="Toggle Soroban Smart Contract Inspector"
             style={{
-              background: currentView === 'inspector' ? 'rgba(192, 132, 252, 0.2)' : 'transparent',
-              border: '1px solid var(--border-subtle)',
-              color: '#C084FC',
-              borderRadius: '8px',
-              padding: '6px 10px',
-              fontSize: '0.75rem',
+              background: currentView === 'inspector' ? 'rgba(192, 132, 252, 0.15)' : 'transparent',
+              color: currentView === 'inspector' ? '#C084FC' : 'var(--text-secondary)',
               fontWeight: 600,
+              fontSize: '0.85rem',
+              padding: '6px 12px',
+              borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px'
+              gap: '4px',
+              cursor: 'pointer'
             }}
           >
             <Terminal size={14} />
             <span>Inspector</span>
           </button>
+        </nav>
 
+        {/* Right Status Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <a
+            href={`https://stellar.expert/explorer/testnet/account/${freighterKey}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View Account on Stellar Expert"
+            style={{
+              background: 'rgba(0, 230, 118, 0.12)',
+              border: '1px solid rgba(0, 230, 118, 0.35)',
+              color: '#00E676',
+              borderRadius: '9999px',
+              padding: '6px 16px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              textDecoration: 'none'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00E676', boxShadow: '0 0 8px #00E676' }}></span>
+            <span>Freighter ({freighterKey.slice(0, 4)}...{freighterKey.slice(-4)})</span>
+            <ExternalLink size={12} color="#00E676" />
+          </a>
         </div>
 
       </div>
