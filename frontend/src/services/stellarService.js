@@ -305,10 +305,14 @@ class StateStore {
    * Soroban / Horizon function: `start_session(env, driver, lot_id, rate_per_minute)`
    */
   async startSession(driverAddress, lotId) {
+    const activeDriver = (driverAddress && driverAddress.startsWith('G') && driverAddress.length === 56)
+      ? driverAddress
+      : TARGET_TESTNET_ACCOUNT;
+
     const lot = this.parkingLots.find(l => l.id === Number(lotId));
     if (!lot) throw new Error("Lot not found");
 
-    const key = `${driverAddress}_${lotId}`;
+    const key = `${activeDriver}_${lotId}`;
     if (this.activeSessions[key] && this.activeSessions[key].active) {
       throw new Error("SessionAlreadyActive: You already have an active parking session at this lot.");
     }
@@ -424,7 +428,11 @@ class StateStore {
    * Builds and submits a real Stellar Network transaction signed via Freighter or funded keypair!
    */
   async endSession(driverAddress, lotId) {
-    const key = `${driverAddress}_${lotId}`;
+    const activeDriver = (driverAddress && driverAddress.startsWith('G') && driverAddress.length === 56)
+      ? driverAddress
+      : TARGET_TESTNET_ACCOUNT;
+
+    const key = `${activeDriver}_${lotId}`;
     const session = this.activeSessions[key];
 
     if (!session || !session.active) {

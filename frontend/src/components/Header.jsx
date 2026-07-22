@@ -48,22 +48,25 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
     <>
       <header style={{
         position: 'sticky',
-        top: 0,
+        top: '12px',
         zIndex: 100,
-        background: 'rgba(9, 13, 22, 0.85)',
-        backdropFilter: 'blur(16px)',
-        WebkitBackdropFilter: 'blur(16px)',
-        borderBottom: '1px solid var(--border-subtle)',
-        padding: '14px 24px'
+        padding: '0 20px',
+        maxWidth: '1240px',
+        margin: '0 auto'
       }}>
         <div style={{
-          maxWidth: '1280px',
-          margin: '0 auto',
+          background: 'rgba(24, 30, 44, 0.85)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '9999px',
+          padding: '10px 24px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '16px'
+          gap: '16px',
+          boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.6)'
         }}>
           
           {/* Logo & Brand */}
@@ -74,34 +77,34 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
             <div style={{
               width: '36px',
               height: '36px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
+              borderRadius: '50%',
+              background: 'var(--color-primary-gradient)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#040D1A',
+              color: '#03101E',
               fontWeight: 900,
               fontSize: '1.2rem',
-              boxShadow: '0 0 16px rgba(6, 182, 212, 0.4)'
+              boxShadow: '0 0 16px rgba(56, 189, 248, 0.4)'
             }}>
               P
             </div>
             <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#FFFFFF' }}>
-              ParkStream<span style={{ color: '#06B6D4' }}>.</span>
+              ParkStream<span style={{ color: '#38BDF8' }}>.</span>
             </span>
           </div>
 
-          {/* Center Nav Items */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* Center Nav Items (Material 3 Pill Switcher) */}
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.04)', padding: '4px', borderRadius: '9999px' }}>
             <button
               onClick={() => setCurrentView('landing')}
               style={{
-                background: currentView === 'landing' ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                background: currentView === 'landing' ? 'rgba(255, 255, 255, 0.12)' : 'transparent',
                 color: currentView === 'landing' ? '#FFFFFF' : 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                padding: '6px 14px',
-                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                padding: '8px 18px',
+                borderRadius: '9999px',
                 cursor: 'pointer'
               }}
             >
@@ -111,12 +114,12 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
             <button
               onClick={() => setCurrentView('driver')}
               style={{
-                background: currentView === 'driver' ? 'rgba(6, 182, 212, 0.15)' : 'transparent',
-                color: currentView === 'driver' ? '#06B6D4' : 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                padding: '6px 14px',
-                borderRadius: '8px',
+                background: currentView === 'driver' ? 'var(--color-primary-gradient)' : 'transparent',
+                color: currentView === 'driver' ? '#03101E' : 'var(--text-secondary)',
+                fontWeight: 800,
+                fontSize: '0.82rem',
+                padding: '8px 18px',
+                borderRadius: '9999px',
                 cursor: 'pointer'
               }}
             >
@@ -126,12 +129,12 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
             <button
               onClick={() => setCurrentView('operator')}
               style={{
-                background: currentView === 'operator' ? 'rgba(6, 182, 212, 0.15)' : 'transparent',
-                color: currentView === 'operator' ? '#06B6D4' : 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                padding: '6px 14px',
-                borderRadius: '8px',
+                background: currentView === 'operator' ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
+                color: currentView === 'operator' ? '#38BDF8' : 'var(--text-secondary)',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                padding: '8px 18px',
+                borderRadius: '9999px',
                 cursor: 'pointer'
               }}
             >
@@ -141,15 +144,15 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
             <button
               onClick={() => setCurrentView(currentView === 'inspector' ? 'landing' : 'inspector')}
               style={{
-                background: currentView === 'inspector' ? 'rgba(129, 140, 248, 0.15)' : 'transparent',
-                color: currentView === 'inspector' ? '#818CF8' : 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                padding: '6px 14px',
-                borderRadius: '8px',
+                background: currentView === 'inspector' ? 'rgba(168, 85, 247, 0.15)' : 'transparent',
+                color: currentView === 'inspector' ? '#A855F7' : 'var(--text-secondary)',
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                padding: '8px 18px',
+                borderRadius: '9999px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '6px',
                 cursor: 'pointer'
               }}
             >
@@ -164,20 +167,20 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
               <button
                 onClick={() => setIsWalletModalOpen(true)}
                 style={{
-                  background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
-                  color: '#040D1A',
+                  background: 'var(--color-primary-gradient)',
+                  color: '#03101E',
                   borderRadius: '9999px',
-                  padding: '8px 18px',
+                  padding: '8px 20px',
                   fontSize: '0.82rem',
                   fontWeight: 800,
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
+                  boxShadow: '0 0 20px rgba(56, 189, 248, 0.35)',
                   cursor: 'pointer'
                 }}
               >
-                <Wallet size={15} color="#040D1A" strokeWidth={2.5} />
+                <Wallet size={15} color="#03101E" strokeWidth={2.5} />
                 <span>Connect Wallet</span>
               </button>
             ) : (

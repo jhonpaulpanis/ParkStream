@@ -206,95 +206,109 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
 
       {/* Available Parking Lots Grid */}
       <div style={{ marginBottom: '40px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
-            <h3 style={{ fontSize: '1.3rem', fontWeight: 700 }}>Nearby Parking Lots (Stellar & Soroban Enabled)</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Select a lot below to manually simulate gate entry or scan QR code with your connected wallet</p>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'white' }}>
+              Nearby Parking Lots <span style={{ fontSize: '0.8rem', color: '#38BDF8', background: 'rgba(56, 189, 248, 0.12)', padding: '3px 10px', borderRadius: '9999px', marginLeft: '8px', border: '1px solid rgba(56, 189, 248, 0.25)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Soroban Smart Contract</span>
+            </h3>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+              Select a lot below to simulate real-time barrier entry or scan QR code
+            </p>
           </div>
         </div>
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '20px'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+          gap: '24px'
         }}>
           {parkingLots.map((lot) => {
             const isThisLotActive = activeSession && activeSession.lotId === lot.id;
+            const fillPercent = Math.round((lot.occupied / lot.capacity) * 100);
             return (
               <div
                 key={lot.id}
                 className="glass-panel glass-panel-hover"
                 style={{
-                  padding: '24px',
+                  padding: '28px',
                   position: 'relative',
-                  border: isThisLotActive ? '1px solid var(--color-cyan)' : '1px solid var(--border-subtle)',
-                  background: isThisLotActive ? 'rgba(0, 242, 254, 0.05)' : 'var(--bg-card)'
+                  borderRadius: '20px',
+                  border: isThisLotActive ? '1.5px solid #38BDF8' : '1px solid var(--border-subtle)',
+                  background: isThisLotActive ? 'rgba(56, 189, 248, 0.08)' : 'var(--bg-stitch-card)'
                 }}
               >
-                {/* Rate tag */}
+                {/* Rate Tag */}
                 <div style={{
                   position: 'absolute',
-                  top: '20px',
-                  right: '20px',
-                  background: 'rgba(0, 230, 118, 0.15)',
-                  border: '1px solid rgba(0, 230, 118, 0.3)',
-                  color: '#00E676',
-                  padding: '6px 12px',
-                  borderRadius: '10px',
-                  fontWeight: 700,
+                  top: '24px',
+                  right: '24px',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  color: '#10B981',
+                  padding: '6px 14px',
+                  borderRadius: '9999px',
+                  fontWeight: 800,
                   fontSize: '0.85rem'
                 }} className="mono">
                   ${lot.rateFormatted} USDC/min
                 </div>
 
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
-                  Lot #{lot.id}
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '6px' }}>
+                  Stellar Lot #{lot.id}
                 </div>
-                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '8px', paddingRight: '90px' }}>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'white', marginBottom: '8px', paddingRight: '110px', lineHeight: 1.3 }}>
                   {lot.name}
                 </h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <MapPin size={14} color="var(--color-cyan)" /> {lot.location}
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '22px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <MapPin size={15} color="#38BDF8" /> {lot.location}
                 </p>
 
-                {/* Capacity stats */}
+                {/* Capacity stats with visual progress bar */}
                 <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
                   background: 'rgba(0, 0, 0, 0.3)',
-                  padding: '12px 16px',
-                  borderRadius: '12px',
-                  marginBottom: '20px',
-                  fontSize: '0.85rem'
+                  padding: '14px 18px',
+                  borderRadius: '14px',
+                  marginBottom: '22px'
                 }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Occupancy:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-                    {lot.occupied} / {lot.capacity} spaces ({Math.round((lot.occupied / lot.capacity) * 100)}% full)
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.82rem', marginBottom: '8px' }}>
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Occupancy Capacity</span>
+                    <span style={{ fontWeight: 800, color: fillPercent > 80 ? '#F43F5E' : '#10B981' }}>
+                      {lot.occupied} / {lot.capacity} ({fillPercent}%)
+                    </span>
+                  </div>
+                  <div style={{ width: '100%', height: '6px', background: 'rgba(255, 255, 255, 0.08)', borderRadius: '9999px', overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${fillPercent}%`,
+                      height: '100%',
+                      background: fillPercent > 80 ? 'var(--color-rose)' : 'var(--color-emerald-gradient)',
+                      borderRadius: '9999px',
+                      transition: 'width 0.4s ease'
+                    }}></div>
+                  </div>
                 </div>
 
                 {/* Action button */}
                 {isThisLotActive ? (
                   <div style={{
                     textAlign: 'center',
-                    padding: '10px',
-                    borderRadius: '10px',
-                    background: 'rgba(0, 242, 254, 0.1)',
-                    color: 'var(--color-cyan)',
-                    fontWeight: 700,
-                    fontSize: '0.9rem'
+                    padding: '12px',
+                    borderRadius: '9999px',
+                    background: 'rgba(56, 189, 248, 0.15)',
+                    color: '#38BDF8',
+                    fontWeight: 800,
+                    fontSize: '0.88rem',
+                    border: '1px solid rgba(56, 189, 248, 0.3)'
                   }}>
-                    Current Active Session
+                    Active Meter Session
                   </div>
                 ) : (
                   <button
-                    className="btn-secondary"
+                    className="btn-primary"
                     disabled={!!activeSession || loading}
                     onClick={() => handleStartSession(lot.id)}
-                    style={{ width: '100%', justifyContent: 'center' }}
+                    style={{ width: '100%', justifyContent: 'center', opacity: activeSession ? 0.5 : 1, cursor: activeSession ? 'not-allowed' : 'pointer' }}
                   >
-                    {activeSession ? 'Session in Progress Elsewhere' : `Enter Lot #${lot.id} & Start Session`}
+                    <span>{activeSession ? 'Session Active Elsewhere' : `Enter Lot #${lot.id} & Start Session`}</span>
                     <ArrowRight size={16} />
                   </button>
                 )}
