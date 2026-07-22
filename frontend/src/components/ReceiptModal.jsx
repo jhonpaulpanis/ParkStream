@@ -193,24 +193,26 @@ export default function ReceiptModal({ receipt, onClose }) {
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <a
-            href={`https://stellar.expert/explorer/testnet/tx/${receipt.txHash}`}
+            href={`https://stellar.expert/explorer/testnet/account/${receipt.driver || 'GAANT3ETP7B3HRWVXV5UID6J6WX5GEZKDJA5SXT4FBJAYBL64HI4MBUM'}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"
             style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
           >
-            View Tx on Stellar Expert <ExternalLink size={16} />
+            View Account on Stellar Expert <ExternalLink size={16} />
           </a>
 
-          <a
-            href={`${EXPLORER_ACCOUNT_BASE_URL}${receipt.driver}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-secondary"
-            style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
-          >
-            Stellar Account <ExternalLink size={16} />
-          </a>
+          {receipt.txHash && receipt.txHash.length === 64 && (
+            <a
+              href={`https://stellar.expert/explorer/testnet/tx/${receipt.txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary"
+              style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
+            >
+              View Tx Details <ExternalLink size={16} />
+            </a>
+          )}
         </div>
 
       </div>

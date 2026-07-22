@@ -151,7 +151,7 @@ class StateStore {
         timestamp: new Date(Date.now() - 1800000).toLocaleTimeString(),
         fnName: "end_session",
         args: { driver: TARGET_TESTNET_ACCOUNT, lot_id: 1 },
-        txHash: "0d3e7a13bfc783fa22ff178b7168eefb081c0a6cff796d9bbd60049c7544cc40",
+        txHash: "6f9fd4fc04ee7da77d042d83771e674447074acff124c7de2b464d8960c53d6e",
         status: "SUCCESS",
         resultFeeStroops: 30000000,
         gasUsed: "210,800"
