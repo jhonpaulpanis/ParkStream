@@ -10,7 +10,12 @@ export const CONTRACT_ADDRESS = "CC54GXK5TCO54O4HTS3H7KCBKZH6XV733SDERTPVBHOHW3Z
 export const TOKEN_ADDRESS = "CC4W7G5X3USDC7STELAR4TESTNETX6XV733SDERTPVBHOHW3ZJRQO7D325";
 export const STELLAR_NETWORK = "Testnet";
 export const SOROBAN_RPC_URL = "https://soroban-testnet.stellar.org";
-export const EXPLORER_BASE_URL = "https://stellar.expert/explorer/testnet/tx/";
+
+// Official Working Explorer URLs
+export const EXPLORER_CONTRACT_URL = `https://stellar.expert/explorer/testnet/contract/${CONTRACT_ADDRESS}`;
+export const EXPLORER_ACCOUNT_BASE_URL = `https://stellar.expert/explorer/testnet/account/`;
+export const SOROBAN_LAB_URL = `https://lab.stellar.org/r/testnet/contract/${CONTRACT_ADDRESS}`;
+export const EXPLORER_BASE_URL = EXPLORER_CONTRACT_URL;
 
 // Default Demo Accounts
 export const DEMO_ACCOUNTS = {

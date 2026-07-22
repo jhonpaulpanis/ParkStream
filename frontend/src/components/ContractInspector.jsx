@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { stellarState, CONTRACT_ADDRESS, TOKEN_ADDRESS, SOROBAN_RPC_URL, EXPLORER_BASE_URL } from '../services/stellarService';
+import { stellarState, CONTRACT_ADDRESS, TOKEN_ADDRESS, SOROBAN_RPC_URL, EXPLORER_CONTRACT_URL, SOROBAN_LAB_URL } from '../services/stellarService';
 import { Terminal, Shield, ExternalLink, Code2, Cpu, CheckCircle2, Zap, Copy, Check } from 'lucide-react';
 
 export default function ContractInspector() {
@@ -52,7 +52,7 @@ export default function ContractInspector() {
 
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <a
-              href={`https://lab.stellar.org/r/testnet/contract/${CONTRACT_ADDRESS}`}
+              href={SOROBAN_LAB_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
@@ -62,13 +62,13 @@ export default function ContractInspector() {
             </a>
 
             <a
-              href={`${EXPLORER_BASE_URL}0d3e7a13bfc783fa22ff178b7168eefb081c0a6cff796d9bbd60049c7544cc40`}
+              href={EXPLORER_CONTRACT_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary"
               style={{ fontSize: '0.85rem', borderColor: 'rgba(139, 92, 246, 0.4)', color: '#C084FC' }}
             >
-              Stellar Expert Explorer <ExternalLink size={14} />
+              Stellar Expert Contract <ExternalLink size={14} />
             </a>
           </div>
         </div>
@@ -213,7 +213,7 @@ export default function ContractInspector() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                 <span>Tx Hash: <strong style={{ color: 'white' }}>{log.txHash.slice(0, 20)}...{log.txHash.slice(-10)}</strong></span>
                 <a
-                  href={`${EXPLORER_BASE_URL}${log.txHash}`}
+                  href={EXPLORER_CONTRACT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--color-cyan)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}

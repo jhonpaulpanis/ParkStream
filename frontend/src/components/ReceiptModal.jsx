@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { X, ShieldCheck, ExternalLink, Download, FileText, CheckCircle2, Copy, Check } from 'lucide-react';
-import { EXPLORER_BASE_URL } from '../services/stellarService';
+import { X, ShieldCheck, ExternalLink, FileText, CheckCircle2, Copy, Check } from 'lucide-react';
+import { CONTRACT_ADDRESS, EXPLORER_ACCOUNT_BASE_URL, SOROBAN_LAB_URL } from '../services/stellarService';
 
 export default function ReceiptModal({ receipt, onClose }) {
   const [copiedHash, setCopiedHash] = React.useState(false);
@@ -191,24 +191,26 @@ export default function ReceiptModal({ receipt, onClose }) {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <a
-            href={`${EXPLORER_BASE_URL}${receipt.txHash}`}
+            href={`${EXPLORER_ACCOUNT_BASE_URL}${receipt.driver}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"
-            style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.9rem' }}
+            style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
           >
-            View on Stellar Expert <ExternalLink size={16} />
+            Stellar Expert Account <ExternalLink size={16} />
           </a>
 
-          <button
-            onClick={onClose}
+          <a
+            href={SOROBAN_LAB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-secondary"
-            style={{ padding: '12px 20px', borderRadius: '12px' }}
+            style={{ flex: 1, padding: '12px', borderRadius: '12px', textDecoration: 'none', justifyContent: 'center', fontSize: '0.85rem' }}
           >
-            Close Receipt
-          </button>
+            Soroban Contract Lab <ExternalLink size={16} />
+          </a>
         </div>
 
       </div>
