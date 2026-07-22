@@ -121,9 +121,15 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Freighter USDC Token</div>
-            <div className="mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: '#00E676' }}>
-              ${driverBalance.toFixed(2)} USDC
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Freighter Tokens (Testnet)</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00E676' }}>
+                ${driverBalance.toFixed(2)} USDC
+              </span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>|</span>
+              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00F2FE' }}>
+                {(stellarState.accounts.DRIVER.balanceXLM || 10000).toLocaleString()} XLM
+              </span>
             </div>
           </div>
 
@@ -150,27 +156,48 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
               <span>Connect Freighter</span>
             </button>
           ) : (
-            <a
-              href="https://freighter.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-subtle)',
-                color: 'var(--text-secondary)',
-                fontWeight: 600,
-                fontSize: '0.8rem',
-                padding: '8px 14px',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}
-            >
-              <span>Freighter.app</span>
-              <ExternalLink size={12} />
-            </a>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={async () => {
+                  if (freighterKey) {
+                    await stellarState.fetchHorizonBalances(freighterKey);
+                  }
+                }}
+                title="Sync live Horizon balance"
+                style={{
+                  background: 'rgba(0, 242, 254, 0.1)',
+                  border: '1px solid rgba(0, 242, 254, 0.3)',
+                  color: '#00F2FE',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600
+                }}
+              >
+                Sync Balance
+              </button>
+              <a
+                href="https://freighter.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                  fontWeight: 600,
+                  fontSize: '0.8rem',
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <span>Freighter.app</span>
+                <ExternalLink size={12} />
+              </a>
+            </div>
           )}
         </div>
       </div>
