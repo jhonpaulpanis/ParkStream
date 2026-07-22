@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { stellarState, CONTRACT_ADDRESS } from '../services/stellarService';
-import { Car, Building2, Terminal, RefreshCw, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Car, Building2, Terminal, RefreshCw, ExternalLink, ShieldCheck, Wallet, CheckCircle2 } from 'lucide-react';
 
 export default function Header({ currentView, setCurrentView, activeWallet, setActiveWallet, onOpenScanner }) {
   const [driverBalance, setDriverBalance] = useState(stellarState.accounts.DRIVER.balanceUSDC);
   const [operatorBalance, setOperatorBalance] = useState(stellarState.accounts.OPERATOR.balanceUSDC);
+  const [freighterConnected, setFreighterConnected] = useState(stellarState.freighterConnected);
+  const [freighterKey, setFreighterKey] = useState(stellarState.freighterPublicKey);
   const [faucetLoading, setFaucetLoading] = useState(false);
+  const [connectLoading, setConnectLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = stellarState.subscribe(() => {
       setDriverBalance(stellarState.accounts.DRIVER.balanceUSDC);
       setOperatorBalance(stellarState.accounts.OPERATOR.balanceUSDC);
+      setFreighterConnected(stellarState.freighterConnected);
+      setFreighterKey(stellarState.freighterPublicKey);
     });
     return unsubscribe;
   }, []);
@@ -21,6 +26,24 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
       stellarState.faucetDriverUSDC(25);
       setFaucetLoading(false);
     }, 600);
+  };
+
+  const handleConnectFreighter = async () => {
+    setConnectLoading(true);
+    try {
+      const res = await stellarState.connectFreighter();
+      if (res && res.success) {
+        setActiveWallet('driver');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setConnectLoading(false);
+    }
+  };
+
+  const handleDisconnectFreighter = () => {
+    stellarState.disconnectFreighter();
   };
 
   const scrollToSection = (id) => {
@@ -181,6 +204,52 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00E676' }}></span>
             <span>Operator Hub</span>
           </button>
+
+          {/* Connect Freighter / Connected Wallet Button */}
+          {!freighterConnected ? (
+            <button
+              onClick={handleConnectFreighter}
+              disabled={connectLoading}
+              style={{
+                background: 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)',
+                color: '#040D1A',
+                borderRadius: '9999px',
+                padding: '8px 18px',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                letterSpacing: '0.03em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 0 20px rgba(0, 242, 254, 0.35)',
+                cursor: 'pointer'
+              }}
+            >
+              <Wallet size={14} color="#040D1A" strokeWidth={2.5} />
+              <span>{connectLoading ? 'CONNECTING...' : 'CONNECT FREIGHTER'}</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleDisconnectFreighter}
+              title={`Click to disconnect Freighter (${freighterKey})`}
+              style={{
+                background: 'rgba(0, 230, 118, 0.15)',
+                border: '1px solid rgba(0, 230, 118, 0.4)',
+                color: '#00E676',
+                borderRadius: '9999px',
+                padding: '6px 14px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              <CheckCircle2 size={14} color="#00E676" />
+              <span>Freighter ({freighterKey.slice(0, 4)}...{freighterKey.slice(-4)})</span>
+            </button>
+          )}
 
           {/* GET STARTED Primary Purple Button */}
           <button

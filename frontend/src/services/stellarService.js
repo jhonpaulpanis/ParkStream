@@ -4,6 +4,8 @@
  * Explorer: https://lab.stellar.org/r/testnet/contract/CC54GXK5TCO54O4HTS3H7KCBKZH6XV733SDERTPVBHOHW3ZJRQO7D325
  */
 
+import { isConnected, getPublicKey } from '@stellar/freighter-api';
+
 export const CONTRACT_ADDRESS = "CC54GXK5TCO54O4HTS3H7KCBKZH6XV733SDERTPVBHOHW3ZJRQO7D325";
 export const TOKEN_ADDRESS = "CC4W7G5X3USDC7STELAR4TESTNETX6XV733SDERTPVBHOHW3ZJRQO7D325";
 export const STELLAR_NETWORK = "Testnet";
@@ -83,6 +85,10 @@ class StateStore {
     this.parkingLots = [...INITIAL_PARKING_LOTS];
     this.accounts = { ...DEMO_ACCOUNTS };
     
+    // Freighter Wallet Connection State
+    this.freighterConnected = false;
+    this.freighterPublicKey = "";
+    
     // Active session: { driverAddress, lotId, startTimeSec, ratePerMinute, active: true }
     this.activeSessions = {};
     
@@ -138,6 +144,42 @@ class StateStore {
 
   notify() {
     this.listeners.forEach(l => l());
+  }
+
+  // --- Freighter Wallet Integration ---
+  async connectFreighter() {
+    try {
+      if (typeof window !== 'undefined' && (await isConnected())) {
+        const key = await getPublicKey();
+        if (key) {
+          this.freighterConnected = true;
+          this.freighterPublicKey = key;
+          this.accounts.DRIVER.address = key;
+          this.accounts.DRIVER.name = `Freighter (${key.slice(0, 4)}...${key.slice(-4)})`;
+          this.notify();
+          return { success: true, publicKey: key, source: 'extension' };
+        }
+      }
+    } catch (e) {
+      console.warn("Freighter connection fallback:", e);
+    }
+
+    // Simulated testnet key if extension is not installed
+    const testKey = "GCFREIGHTER" + Math.random().toString(36).substring(2, 10).toUpperCase() + "TESTNET";
+    this.freighterConnected = true;
+    this.freighterPublicKey = testKey;
+    this.accounts.DRIVER.address = testKey;
+    this.accounts.DRIVER.name = `Freighter (${testKey.slice(0, 4)}...${testKey.slice(-4)})`;
+    this.notify();
+    return { success: true, publicKey: testKey, source: 'simulated' };
+  }
+
+  disconnectFreighter() {
+    this.freighterConnected = false;
+    this.freighterPublicKey = "";
+    this.accounts.DRIVER.address = DEMO_ACCOUNTS.DRIVER.address;
+    this.accounts.DRIVER.name = DEMO_ACCOUNTS.DRIVER.name;
+    this.notify();
   }
 
   // --- Smart Contract Functions ---
