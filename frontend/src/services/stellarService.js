@@ -24,11 +24,13 @@ export const EXPLORER_TX_BASE_URL = `https://stellar.expert/explorer/testnet/tx/
 export const SOROBAN_LAB_URL = `https://lab.stellar.org/r/testnet/contract/${CONTRACT_ADDRESS}`;
 export const EXPLORER_BASE_URL = EXPLORER_TX_BASE_URL;
 
+export const TARGET_TESTNET_ACCOUNT = "GAANT3ETP7B3HRWVXV5UID6J6WX5GEZKDJA5SXT4FBJAYBL64HI4MBUM";
+
 // Default Demo Accounts
 export const DEMO_ACCOUNTS = {
   DRIVER: {
-    name: "Maria Santos (Driver)",
-    address: "GD5XMARIASANTOS7PARKSTREAMTESTNETDRIVERR7PA25",
+    name: "Freighter Account (GAANT...MBUM)",
+    address: TARGET_TESTNET_ACCOUNT,
     role: "driver",
     balanceUSDC: 50.00,
     balanceXLM: 10000.00,
@@ -99,11 +101,17 @@ class StateStore {
     this.parkingLots = [...INITIAL_PARKING_LOTS];
     this.accounts = { ...DEMO_ACCOUNTS };
     
+    // Target testnet account
+    this.targetTestnetAccount = TARGET_TESTNET_ACCOUNT;
+    
     // Freighter Wallet Connection State
-    this.freighterConnected = false;
-    this.freighterPublicKey = "";
+    this.freighterConnected = true;
+    this.freighterPublicKey = TARGET_TESTNET_ACCOUNT;
     this.freighterXlmBalance = 10000.00;
     this.freighterUsdcBalance = 50.00;
+    
+    // Horizon Stellar Transactions
+    this.stellarTransactions = [];
     
     // Active session: { driverAddress, lotId, startTimeSec, ratePerMinute, active: true }
     this.activeSessions = {};
@@ -111,8 +119,8 @@ class StateStore {
     // Receipt history: array of receipt objects
     this.receipts = [
       {
-        txHash: "0d3e7a13bfc783fa22ff178b7168eefb081c0a6cff796d9bbd60049c7544cc40",
-        driver: "GD5XMARIASANTOS7PARKSTREAMTESTNETDRIVERR7PA25",
+        txHash: "38380b8064e41cf8c0bc24cb98dc8888c7085a33c19f2ddd93d99fd5c32ac8d3",
+        driver: TARGET_TESTNET_ACCOUNT,
         lotId: 1,
         lotName: "Makati Central Commercial Lot #1",
         operator: OPERATOR_ADDRESS,
@@ -122,7 +130,7 @@ class StateStore {
         durationMinutes: 30,
         ratePerMinute: 1000000,
         feeUSDC: "3.0000",
-        ledgerSequence: 582910,
+        ledgerSequence: 3740285,
         verifiedOnStellar: true
       }
     ];
@@ -134,7 +142,7 @@ class StateStore {
         timestamp: new Date(Date.now() - 3600000).toLocaleTimeString(),
         fnName: "init",
         args: { token: TOKEN_ADDRESS, lot_id: 1, operator: DEMO_ACCOUNTS.OPERATOR.address },
-        txHash: "7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
+        txHash: "38380b8064e41cf8c0bc24cb98dc8888c7085a33c19f2ddd93d99fd5c32ac8d3",
         status: "SUCCESS",
         gasUsed: "142,500"
       },
@@ -142,7 +150,7 @@ class StateStore {
         id: "log-2",
         timestamp: new Date(Date.now() - 1800000).toLocaleTimeString(),
         fnName: "end_session",
-        args: { driver: DEMO_ACCOUNTS.DRIVER.address, lot_id: 1 },
+        args: { driver: TARGET_TESTNET_ACCOUNT, lot_id: 1 },
         txHash: "0d3e7a13bfc783fa22ff178b7168eefb081c0a6cff796d9bbd60049c7544cc40",
         status: "SUCCESS",
         resultFeeStroops: 30000000,
@@ -151,6 +159,12 @@ class StateStore {
     ];
 
     this.listeners = new Set();
+    
+    // Fetch live Horizon data on start
+    setTimeout(() => {
+      this.fetchHorizonBalances(TARGET_TESTNET_ACCOUNT);
+      this.fetchHorizonTransactions(TARGET_TESTNET_ACCOUNT);
+    }, 100);
   }
 
   subscribe(listener) {
@@ -163,7 +177,20 @@ class StateStore {
   }
 
   // --- Freighter Wallet Integration ---
-  async connectFreighter() {
+  async connectFreighter(explicitAddress = null) {
+    const targetKey = explicitAddress || TARGET_TESTNET_ACCOUNT;
+
+    if (explicitAddress && explicitAddress.startsWith('G') && explicitAddress.length === 56) {
+      this.freighterConnected = true;
+      this.freighterPublicKey = targetKey;
+      this.accounts.DRIVER.address = targetKey;
+      this.accounts.DRIVER.name = `Freighter (${targetKey.slice(0, 4)}...${targetKey.slice(-4)})`;
+      await this.fetchHorizonBalances(targetKey);
+      await this.fetchHorizonTransactions(targetKey);
+      this.notify();
+      return { success: true, publicKey: targetKey, source: 'manual' };
+    }
+
     try {
       const connObj = await isConnected();
       const connected = typeof connObj === 'object' ? connObj.isConnected : connObj;
@@ -183,8 +210,9 @@ class StateStore {
           this.accounts.DRIVER.address = pubKey;
           this.accounts.DRIVER.name = `Freighter Wallet (${pubKey.slice(0, 4)}...${pubKey.slice(-4)})`;
           
-          // Fetch real Stellar Horizon balances
+          // Fetch real Stellar Horizon balances & transactions
           await this.fetchHorizonBalances(pubKey);
+          await this.fetchHorizonTransactions(pubKey);
           
           this.notify();
           return { success: true, publicKey: pubKey, source: 'extension' };
@@ -194,18 +222,15 @@ class StateStore {
       console.warn("Freighter connection attempt error:", e);
     }
 
-    // Fallback simulation key
-    const simKey = "GBFREIGHTER" + Math.random().toString(36).substring(2, 10).toUpperCase() + "TESTNET";
+    // Default connect to specified testnet account
     this.freighterConnected = true;
-    this.freighterPublicKey = simKey;
-    this.accounts.DRIVER.address = simKey;
-    this.accounts.DRIVER.name = `Freighter (${simKey.slice(0, 4)}...${simKey.slice(-4)})`;
-    this.freighterXlmBalance = 10000.00;
-    this.freighterUsdcBalance = 50.00;
-    this.accounts.DRIVER.balanceUSDC = 50.00;
-    this.accounts.DRIVER.balanceXLM = 10000.00;
+    this.freighterPublicKey = targetKey;
+    this.accounts.DRIVER.address = targetKey;
+    this.accounts.DRIVER.name = `Freighter (${targetKey.slice(0, 4)}...${targetKey.slice(-4)})`;
+    await this.fetchHorizonBalances(targetKey);
+    await this.fetchHorizonTransactions(targetKey);
     this.notify();
-    return { success: true, publicKey: simKey, source: 'simulated' };
+    return { success: true, publicKey: targetKey, source: 'testnet_user_account' };
   }
 
   async fetchHorizonBalances(address) {
@@ -227,6 +252,63 @@ class StateStore {
       }
     } catch (err) {
       console.warn("Error fetching Horizon account balances:", err);
+    }
+  }
+
+  async fetchHorizonTransactions(address = this.freighterPublicKey) {
+    if (!address) return;
+    try {
+      // 1. Fetch payments
+      const paymentsRes = await fetch(`${HORIZON_URL}/accounts/${address}/payments?limit=15&order=desc`);
+      let payments = [];
+      if (paymentsRes.ok) {
+        const pData = await paymentsRes.json();
+        payments = pData._embedded?.records || [];
+      }
+
+      // 2. Fetch transactions
+      const txRes = await fetch(`${HORIZON_URL}/accounts/${address}/transactions?limit=15&order=desc`);
+      let txs = [];
+      if (txRes.ok) {
+        const tData = await txRes.json();
+        txs = tData._embedded?.records || [];
+      }
+
+      this.stellarTransactions = txs.map(t => {
+        const relatedPayment = payments.find(p => p.transaction_hash === t.hash);
+        let txType = "Transaction";
+        let amountStr = "";
+
+        if (relatedPayment) {
+          if (relatedPayment.type === "create_account") {
+            txType = "Create Account (Testnet Fund)";
+            amountStr = `${relatedPayment.starting_balance} XLM`;
+          } else if (relatedPayment.type === "payment") {
+            txType = "Payment";
+            amountStr = `${relatedPayment.amount} ${relatedPayment.asset_code || 'XLM'}`;
+          } else {
+            txType = relatedPayment.type;
+          }
+        }
+
+        return {
+          hash: t.hash,
+          ledger: t.ledger,
+          createdAt: t.created_at,
+          sourceAccount: t.source_account,
+          feeCharged: (Number(t.fee_charged) / 10000000).toFixed(5) + " XLM",
+          operationCount: t.operation_count,
+          successful: t.successful,
+          memo: t.memo || "",
+          type: txType,
+          amountStr,
+          explorerUrl: `https://stellar.expert/explorer/testnet/tx/${t.hash}`
+        };
+      });
+
+      this.notify();
+    } catch (err) {
+      console.warn("Error fetching Horizon transactions:", err);
     }
   }
 

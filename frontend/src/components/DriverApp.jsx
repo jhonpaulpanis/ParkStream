@@ -364,14 +364,14 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
       </div>
 
       {/* Driver Parking History & Receipts */}
-      <div className="glass-panel" style={{ padding: '28px' }}>
+      <div className="glass-panel" style={{ padding: '28px', marginBottom: '32px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Receipt size={22} color="var(--color-cyan)" /> Parking Receipts & History
+              <Receipt size={22} color="var(--color-cyan)" /> Parking Receipts & Meter Sessions
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              All payments are cryptographically settled and recorded on Stellar Testnet from your connected Freighter wallet
+              All per-minute payments are cryptographically settled and recorded on Stellar Testnet from your connected Freighter wallet
             </p>
           </div>
         </div>
@@ -434,6 +434,145 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
                   <button className="btn-secondary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
                     View Receipt
                   </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Live Stellar Testnet Horizon Transactions Feed */}
+      <div className="glass-panel" style={{ padding: '28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', color: '#00F2FE' }}>
+              <Sparkles size={22} color="#00F2FE" /> Live Stellar Testnet Transactions
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              Real-time Stellar Horizon blockchain transactions for account <strong className="mono" style={{ color: '#00F2FE' }}>{currentDriver}</strong>
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={() => {
+                stellarState.fetchHorizonTransactions(currentDriver);
+                stellarState.fetchHorizonBalances(currentDriver);
+              }}
+              style={{
+                background: 'rgba(0, 242, 254, 0.12)',
+                border: '1px solid rgba(0, 242, 254, 0.3)',
+                color: '#00F2FE',
+                borderRadius: '8px',
+                padding: '6px 14px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              Refresh Stellar Horizon
+            </button>
+            <a
+              href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', textDecoration: 'none' }}
+            >
+              Open Explorer <ExternalLink size={12} />
+            </a>
+          </div>
+        </div>
+
+        {stellarState.stellarTransactions.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '36px', color: 'var(--text-muted)', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
+            Loading live transactions from Stellar Horizon Testnet...
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {stellarState.stellarTransactions.map((tx) => (
+              <div
+                key={tx.hash}
+                style={{
+                  background: 'rgba(11, 15, 23, 0.8)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '12px',
+                  padding: '18px 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '16px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{
+                    width: '42px',
+                    height: '42px',
+                    borderRadius: '10px',
+                    background: 'linear-gradient(135deg, rgba(0, 242, 254, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%)',
+                    border: '1px solid rgba(0, 242, 254, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#00F2FE'
+                  }}>
+                    <Wallet size={20} />
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'white' }}>{tx.type}</span>
+                      <span style={{
+                        fontSize: '0.7rem',
+                        background: tx.successful ? 'rgba(0, 230, 118, 0.15)' : 'rgba(244, 63, 94, 0.15)',
+                        color: tx.successful ? '#00E676' : '#F43F5E',
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        fontWeight: 700
+                      }}>
+                        {tx.successful ? 'SUCCESS' : 'FAILED'}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px', display: 'flex', gap: '8px' }}>
+                      <span>Ledger: <strong style={{ color: 'white' }}>#{tx.ledger}</strong></span>
+                      <span>•</span>
+                      <span>{new Date(tx.createdAt).toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ textAlign: 'right' }}>
+                    {tx.amountStr && (
+                      <div className="mono" style={{ fontWeight: 800, fontSize: '1rem', color: '#00E676' }}>
+                        {tx.amountStr}
+                      </div>
+                    )}
+                    <div className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                      Fee: {tx.feeCharged}
+                    </div>
+                  </div>
+                  <a
+                    href={tx.explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.06)',
+                      border: '1px solid var(--border-subtle)',
+                      color: 'var(--color-cyan)',
+                      padding: '8px 14px',
+                      borderRadius: '8px',
+                      fontSize: '0.8rem',
+                      fontWeight: 700,
+                      textDecoration: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <span>View Tx</span>
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
               </div>
             ))}

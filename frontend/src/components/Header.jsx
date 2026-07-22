@@ -229,26 +229,48 @@ export default function Header({ currentView, setCurrentView, activeWallet, setA
               <span>{connectLoading ? 'CONNECTING...' : 'CONNECT FREIGHTER'}</span>
             </button>
           ) : (
-            <button
-              onClick={handleDisconnectFreighter}
-              title={`Click to disconnect Freighter (${freighterKey})`}
-              style={{
-                background: 'rgba(0, 230, 118, 0.15)',
-                border: '1px solid rgba(0, 230, 118, 0.4)',
-                color: '#00E676',
-                borderRadius: '9999px',
-                padding: '6px 14px',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                cursor: 'pointer'
-              }}
-            >
-              <CheckCircle2 size={14} color="#00E676" />
-              <span>Freighter ({freighterKey.slice(0, 4)}...{freighterKey.slice(-4)})</span>
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                onClick={handleDisconnectFreighter}
+                title={`Click to disconnect Freighter (${freighterKey})`}
+                style={{
+                  background: 'rgba(0, 230, 118, 0.15)',
+                  border: '1px solid rgba(0, 230, 118, 0.4)',
+                  color: '#00E676',
+                  borderRadius: '9999px',
+                  padding: '6px 14px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  cursor: 'pointer'
+                }}
+              >
+                <CheckCircle2 size={14} color="#00E676" />
+                <span>Freighter ({freighterKey.slice(0, 4)}...{freighterKey.slice(-4)})</span>
+              </button>
+              <a
+                href={`https://stellar.expert/explorer/testnet/account/${freighterKey}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View Account on Stellar Expert"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-secondary)',
+                  borderRadius: '9999px',
+                  padding: '6px 10px',
+                  fontSize: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  textDecoration: 'none'
+                }}
+              >
+                <ExternalLink size={12} />
+              </a>
+            </div>
           )}
 
           {/* GET STARTED Primary Purple Button */}
