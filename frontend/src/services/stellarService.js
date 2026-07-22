@@ -549,7 +549,7 @@ class StateStore {
       durationSeconds: elapsedSeconds,
       durationMinutes,
       ratePerMinute: session.ratePerMinute,
-      feeUSDC: feeUSDC.toFixed(4),
+      feeUSDC: feeUSDC,
       feeStroops,
       ledgerSequence,
       verifiedOnStellar: true,
