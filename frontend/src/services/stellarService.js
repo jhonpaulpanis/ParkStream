@@ -104,11 +104,16 @@ class StateStore {
     // Target testnet account
     this.targetTestnetAccount = TARGET_TESTNET_ACCOUNT;
     
-    // Freighter Wallet Connection State
-    this.freighterConnected = true;
-    this.freighterPublicKey = TARGET_TESTNET_ACCOUNT;
-    this.freighterXlmBalance = 10000.00;
-    this.freighterUsdcBalance = 50.00;
+    // Freighter Wallet Connection State - DEFAULT DISCONNECTED (User chooses when to connect!)
+    this.freighterConnected = false;
+    this.freighterPublicKey = "";
+    this.freighterXlmBalance = 0;
+    this.freighterUsdcBalance = 0;
+    
+    this.accounts.DRIVER.address = "";
+    this.accounts.DRIVER.name = "Wallet Not Connected";
+    this.accounts.DRIVER.balanceUSDC = 0;
+    this.accounts.DRIVER.balanceXLM = 0;
     
     // Horizon Stellar Transactions
     this.stellarTransactions = [];
@@ -136,35 +141,8 @@ class StateStore {
     ];
 
     // Soroban Invocation Log
-    this.logs = [
-      {
-        id: "log-1",
-        timestamp: new Date(Date.now() - 3600000).toLocaleTimeString(),
-        fnName: "init",
-        args: { token: TOKEN_ADDRESS, lot_id: 1, operator: DEMO_ACCOUNTS.OPERATOR.address },
-        txHash: "38380b8064e41cf8c0bc24cb98dc8888c7085a33c19f2ddd93d99fd5c32ac8d3",
-        status: "SUCCESS",
-        gasUsed: "142,500"
-      },
-      {
-        id: "log-2",
-        timestamp: new Date(Date.now() - 1800000).toLocaleTimeString(),
-        fnName: "end_session",
-        args: { driver: TARGET_TESTNET_ACCOUNT, lot_id: 1 },
-        txHash: "6f9fd4fc04ee7da77d042d83771e674447074acff124c7de2b464d8960c53d6e",
-        status: "SUCCESS",
-        resultFeeStroops: 30000000,
-        gasUsed: "210,800"
-      }
-    ];
-
+    this.logs = [];
     this.listeners = new Set();
-    
-    // Fetch live Horizon data on start
-    setTimeout(() => {
-      this.fetchHorizonBalances(TARGET_TESTNET_ACCOUNT);
-      this.fetchHorizonTransactions(TARGET_TESTNET_ACCOUNT);
-    }, 100);
   }
 
   subscribe(listener) {
@@ -176,21 +154,21 @@ class StateStore {
     this.listeners.forEach(l => l());
   }
 
-  // --- Freighter Wallet Integration ---
+  // --- Freighter Wallet Integration (User Chooses Connection) ---
   async connectFreighter(explicitAddress = null) {
-    const targetKey = explicitAddress || TARGET_TESTNET_ACCOUNT;
-
+    // If specific account requested (e.g. GAANT...MBUM)
     if (explicitAddress && explicitAddress.startsWith('G') && explicitAddress.length === 56) {
       this.freighterConnected = true;
-      this.freighterPublicKey = targetKey;
-      this.accounts.DRIVER.address = targetKey;
-      this.accounts.DRIVER.name = `Freighter (${targetKey.slice(0, 4)}...${targetKey.slice(-4)})`;
-      await this.fetchHorizonBalances(targetKey);
-      await this.fetchHorizonTransactions(targetKey);
+      this.freighterPublicKey = explicitAddress;
+      this.accounts.DRIVER.address = explicitAddress;
+      this.accounts.DRIVER.name = `Freighter (${explicitAddress.slice(0, 4)}...${explicitAddress.slice(-4)})`;
+      await this.fetchHorizonBalances(explicitAddress);
+      await this.fetchHorizonTransactions(explicitAddress);
       this.notify();
-      return { success: true, publicKey: targetKey, source: 'manual' };
+      return { success: true, publicKey: explicitAddress, source: 'user_selected_account' };
     }
 
+    // Try browser Freighter extension
     try {
       const connObj = await isConnected();
       const connected = typeof connObj === 'object' ? connObj.isConnected : connObj;
@@ -208,9 +186,8 @@ class StateStore {
           this.freighterConnected = true;
           this.freighterPublicKey = pubKey;
           this.accounts.DRIVER.address = pubKey;
-          this.accounts.DRIVER.name = `Freighter Wallet (${pubKey.slice(0, 4)}...${pubKey.slice(-4)})`;
+          this.accounts.DRIVER.name = `Freighter Extension (${pubKey.slice(0, 4)}...${pubKey.slice(-4)})`;
           
-          // Fetch real Stellar Horizon balances & transactions
           await this.fetchHorizonBalances(pubKey);
           await this.fetchHorizonTransactions(pubKey);
           
@@ -219,18 +196,19 @@ class StateStore {
         }
       }
     } catch (e) {
-      console.warn("Freighter connection attempt error:", e);
+      console.warn("Freighter extension connection error:", e);
     }
 
-    // Default connect to specified testnet account
+    // Connect to pre-configured Testnet Account GAANT...MBUM
+    const key = TARGET_TESTNET_ACCOUNT;
     this.freighterConnected = true;
-    this.freighterPublicKey = targetKey;
-    this.accounts.DRIVER.address = targetKey;
-    this.accounts.DRIVER.name = `Freighter (${targetKey.slice(0, 4)}...${targetKey.slice(-4)})`;
-    await this.fetchHorizonBalances(targetKey);
-    await this.fetchHorizonTransactions(targetKey);
+    this.freighterPublicKey = key;
+    this.accounts.DRIVER.address = key;
+    this.accounts.DRIVER.name = `Freighter (${key.slice(0, 4)}...${key.slice(-4)})`;
+    await this.fetchHorizonBalances(key);
+    await this.fetchHorizonTransactions(key);
     this.notify();
-    return { success: true, publicKey: targetKey, source: 'testnet_user_account' };
+    return { success: true, publicKey: key, source: 'testnet_account' };
   }
 
   async fetchHorizonBalances(address) {

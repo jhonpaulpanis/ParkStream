@@ -71,12 +71,12 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px 48px' }}>
 
-      {/* Freighter.app Connected Account Banner */}
+      {/* Wallet Connection Status Banner */}
       <div style={{
         background: freighterConnected 
-          ? 'linear-gradient(135deg, rgba(0, 242, 254, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)' 
+          ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%)' 
           : 'rgba(15, 23, 42, 0.6)',
-        border: freighterConnected ? '1px solid rgba(0, 242, 254, 0.35)' : '1px solid var(--border-subtle)',
+        border: freighterConnected ? '1px solid rgba(6, 182, 212, 0.35)' : '1px solid var(--border-subtle)',
         borderRadius: '20px',
         padding: '20px 24px',
         marginBottom: '28px',
@@ -91,70 +91,100 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
             width: '44px',
             height: '44px',
             borderRadius: '12px',
-            background: freighterConnected ? 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)' : 'rgba(255,255,255,0.05)',
+            background: freighterConnected ? 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)' : 'rgba(255,255,255,0.05)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: freighterConnected ? '#040D1A' : 'var(--text-muted)',
-            boxShadow: freighterConnected ? '0 0 20px rgba(0, 242, 254, 0.3)' : 'none'
+            boxShadow: freighterConnected ? '0 0 20px rgba(6, 182, 212, 0.3)' : 'none'
           }}>
             <Wallet size={24} />
           </div>
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: freighterConnected ? '#00F2FE' : 'var(--text-muted)' }}>
-                {freighterConnected ? 'FREIGHTER.APP CONNECTED' : 'STELLAR WALLET (FREIGHTER SUPPORTED)'}
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: freighterConnected ? '#06B6D4' : 'var(--text-muted)' }}>
+                {freighterConnected ? 'FREIGHTER WALLET CONNECTED' : 'STELLAR WALLET DISCONNECTED'}
               </span>
-              {freighterConnected && (
-                <span style={{ fontSize: '0.7rem', background: 'rgba(0, 230, 118, 0.15)', color: '#00E676', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(0, 230, 118, 0.3)', fontWeight: 700 }}>
+              {freighterConnected ? (
+                <span style={{ fontSize: '0.7rem', background: 'rgba(16, 185, 129, 0.15)', color: '#10B981', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}>
                   Active Account
+                </span>
+              ) : (
+                <span style={{ fontSize: '0.7rem', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}>
+                  Select Connection Method
                 </span>
               )}
             </div>
 
             <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', marginTop: '2px' }}>
-              {currentDriver}
+              {freighterConnected ? currentDriver : 'Connect wallet to view live balances and parking history'}
             </div>
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Meter Rate & On-Chain Balance</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '2px' }}>
-              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00E676' }} title="Stable Fiat Parking Meter Rate Unit ($0.10/min)">
-                ${driverBalance.toFixed(2)} USDC Meter
-              </span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>|</span>
-              <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#00F2FE' }} title="Live Stellar Horizon Testnet Reserve">
-                {(stellarState.accounts.DRIVER.balanceXLM || 10000).toLocaleString()} XLM (Live Testnet)
-              </span>
-            </div>
-          </div>
+          {freighterConnected ? (
+            <>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Meter Rate & On-Chain Balance</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '2px' }}>
+                  <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#10B981' }} title="Stable Fiat Parking Meter Rate Unit ($0.10/min)">
+                    ${driverBalance.toFixed(2)} USDC Meter
+                  </span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>|</span>
+                  <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#06B6D4' }} title="Live Stellar Horizon Testnet Reserve">
+                    {(stellarState.accounts.DRIVER.balanceXLM || 0).toLocaleString()} XLM (Live Testnet)
+                  </span>
+                </div>
+              </div>
 
-          <a
-            href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="View Account on Stellar Expert"
-            style={{
-              background: 'rgba(0, 242, 254, 0.1)',
-              border: '1px solid rgba(0, 242, 254, 0.3)',
-              color: '#00F2FE',
-              padding: '8px 14px',
-              borderRadius: '10px',
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              textDecoration: 'none'
-            }}
-          >
-            <span>Stellar Expert</span>
-            <ExternalLink size={14} />
-          </a>
+              <a
+                href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="View Account on Stellar Expert"
+                style={{
+                  background: 'rgba(6, 182, 212, 0.1)',
+                  border: '1px solid rgba(6, 182, 212, 0.3)',
+                  color: '#06B6D4',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  textDecoration: 'none'
+                }}
+              >
+                <span>Stellar Expert</span>
+                <ExternalLink size={14} />
+              </a>
+            </>
+          ) : (
+            <button
+              onClick={async () => {
+                await stellarState.connectFreighter();
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
+                color: '#040D1A',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                padding: '10px 20px',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 15px rgba(6, 182, 212, 0.3)',
+                cursor: 'pointer'
+              }}
+            >
+              <Wallet size={16} color="#040D1A" />
+              <span>Connect Wallet</span>
+            </button>
+          )}
         </div>
       </div>
 
