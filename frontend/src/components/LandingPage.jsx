@@ -160,44 +160,24 @@ export default function LandingPage({ onStartDemo, onOpenOperator, onOpenInspect
           {/* CTA Buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '40px' }}>
             <button 
-              onClick={async () => {
-                await stellarState.connectFreighter();
-                onStartDemo();
-              }}
+              onClick={onStartDemo}
               style={{
                 background: 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)',
                 color: '#040D1A',
                 fontWeight: 800,
-                fontSize: '0.95rem',
-                padding: '14px 28px',
+                fontSize: '1rem',
+                padding: '16px 32px',
                 borderRadius: '14px',
                 boxShadow: '0 8px 30px rgba(0, 242, 254, 0.4)',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '10px'
+                gap: '12px',
+                cursor: 'pointer'
               }}
             >
-              <Wallet size={18} color="#040D1A" strokeWidth={2.5} />
-              <span>CONNECT FREIGHTER</span>
-            </button>
-
-            <button 
-              onClick={onStartDemo}
-              style={{
-                background: 'linear-gradient(135deg, #7C3AED 0%, #6366F1 100%)',
-                color: '#FFFFFF',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                padding: '14px 28px',
-                borderRadius: '14px',
-                boxShadow: '0 8px 30px rgba(124, 58, 237, 0.4)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '10px'
-              }}
-            >
-              <span>GET STARTED</span>
-              <ArrowRight size={18} />
+              <Wallet size={20} color="#040D1A" strokeWidth={2.5} />
+              <span>GET STARTED & VIEW STELLAR TRANSACTIONS</span>
+              <ArrowRight size={20} color="#040D1A" />
             </button>
 
             <a
@@ -210,7 +190,7 @@ export default function LandingPage({ onStartDemo, onOpenOperator, onOpenInspect
                 color: 'var(--text-primary)',
                 fontWeight: 600,
                 fontSize: '0.95rem',
-                padding: '14px 24px',
+                padding: '16px 24px',
                 borderRadius: '14px',
                 display: 'inline-flex',
                 alignItems: 'center',
