@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { stellarState, DEMO_ACCOUNTS, stroopsToUSDC, EXPLORER_BASE_URL } from '../services/stellarService';
 import ParkingMeter from './ParkingMeter';
-import { QrCode, MapPin, DollarSign, Clock, ShieldCheck, ArrowRight, ExternalLink, Receipt, FileText, Sparkles, AlertCircle } from 'lucide-react';
+import { QrCode, MapPin, DollarSign, Clock, ShieldCheck, ArrowRight, ExternalLink, Receipt, FileText, Sparkles, AlertCircle, Wallet, CheckCircle2 } from 'lucide-react';
 
 export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
   const [parkingLots, setParkingLots] = useState(stellarState.parkingLots);
   const [activeSession, setActiveSession] = useState(null);
   const [receipts, setReceipts] = useState(stellarState.receipts);
+  const [driverBalance, setDriverBalance] = useState(stellarState.accounts.DRIVER.balanceUSDC);
+  const [freighterConnected, setFreighterConnected] = useState(stellarState.freighterConnected);
+  const [freighterKey, setFreighterKey] = useState(stellarState.freighterPublicKey);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -16,6 +19,9 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
     const updateState = () => {
       setParkingLots([...stellarState.parkingLots]);
       setReceipts([...stellarState.receipts]);
+      setDriverBalance(stellarState.accounts.DRIVER.balanceUSDC);
+      setFreighterConnected(stellarState.freighterConnected);
+      setFreighterKey(stellarState.freighterPublicKey);
 
       // Check active session for driver
       let foundActive = null;
@@ -65,6 +71,110 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px 48px' }}>
 
+      {/* Freighter.app Connected Account Banner */}
+      <div style={{
+        background: freighterConnected 
+          ? 'linear-gradient(135deg, rgba(0, 242, 254, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)' 
+          : 'rgba(15, 23, 42, 0.6)',
+        border: freighterConnected ? '1px solid rgba(0, 242, 254, 0.35)' : '1px solid var(--border-subtle)',
+        borderRadius: '20px',
+        padding: '20px 24px',
+        marginBottom: '28px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '12px',
+            background: freighterConnected ? 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)' : 'rgba(255,255,255,0.05)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: freighterConnected ? '#040D1A' : 'var(--text-muted)',
+            boxShadow: freighterConnected ? '0 0 20px rgba(0, 242, 254, 0.3)' : 'none'
+          }}>
+            <Wallet size={24} />
+          </div>
+
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: freighterConnected ? '#00F2FE' : 'var(--text-muted)' }}>
+                {freighterConnected ? 'FREIGHTER.APP CONNECTED' : 'STELLAR WALLET (FREIGHTER SUPPORTED)'}
+              </span>
+              {freighterConnected && (
+                <span style={{ fontSize: '0.7rem', background: 'rgba(0, 230, 118, 0.15)', color: '#00E676', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(0, 230, 118, 0.3)', fontWeight: 700 }}>
+                  Active Account
+                </span>
+              )}
+            </div>
+
+            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', marginTop: '2px' }}>
+              {currentDriver}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Freighter USDC Token</div>
+            <div className="mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: '#00E676' }}>
+              ${driverBalance.toFixed(2)} USDC
+            </div>
+          </div>
+
+          {!freighterConnected ? (
+            <button
+              onClick={async () => {
+                await stellarState.connectFreighter();
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #00F2FE 0%, #7C3AED 100%)',
+                color: '#040D1A',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 15px rgba(0, 242, 254, 0.3)',
+                cursor: 'pointer'
+              }}
+            >
+              <Wallet size={16} color="#040D1A" />
+              <span>Connect Freighter</span>
+            </button>
+          ) : (
+            <a
+              href="https://freighter.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid var(--border-subtle)',
+                color: 'var(--text-secondary)',
+                fontWeight: 600,
+                fontSize: '0.8rem',
+                padding: '8px 14px',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>Freighter.app</span>
+              <ExternalLink size={12} />
+            </a>
+          )}
+        </div>
+      </div>
+
       {/* Error Alert if any */}
       {errorMsg && (
         <div style={{
@@ -112,7 +222,7 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
               Scan Gate QR to Start Per-Minute Parking
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-              No cash, no overcharging. Scan the entry barrier QR code to open an instant metered session on Stellar. Settled in USDC directly to the parking operator's wallet upon exit.
+              No cash, no overcharging. Scan the entry barrier QR code to open an instant metered session on Stellar. Settled in USDC directly from your Freighter wallet to the parking operator's vault upon exit.
             </p>
           </div>
 
@@ -130,8 +240,8 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
       <div style={{ marginBottom: '40px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div>
-            <h3 style={{ fontSize: '1.3rem', fontWeight: 700 }}>Nearby Parking Lots (Stellar Enabled)</h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Select a lot below to manually simulate gate entry or scan QR code</p>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 700 }}>Nearby Parking Lots (Stellar & Soroban Enabled)</h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Select a lot below to manually simulate gate entry or scan QR code with your connected wallet</p>
           </div>
         </div>
 
@@ -234,7 +344,7 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
               <Receipt size={22} color="var(--color-cyan)" /> Parking Receipts & History
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              All payments are cryptographically settled and recorded on Stellar Testnet
+              All payments are cryptographically settled and recorded on Stellar Testnet from your connected Freighter wallet
             </p>
           </div>
         </div>
