@@ -71,38 +71,36 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px 48px' }}>
 
-      {/* Wallet Connection Status Banner */}
-      <div style={{
-        background: freighterConnected 
-          ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%)' 
-          : 'rgba(15, 23, 42, 0.6)',
-        border: freighterConnected ? '1px solid rgba(6, 182, 212, 0.35)' : '1px solid var(--border-subtle)',
-        borderRadius: '20px',
-        padding: '20px 24px',
-        marginBottom: '28px',
+      {/* Integrated Wallet & Gate QR Control Bar */}
+      <div className="glass-panel animate-fade-in" style={{
+        padding: '24px 28px',
+        marginBottom: '32px',
+        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.75) 100%)',
+        border: '1px solid rgba(6, 182, 212, 0.25)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '16px'
+        gap: '20px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
           <div style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            background: freighterConnected ? 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)' : 'rgba(255,255,255,0.05)',
+            width: '48px',
+            height: '48px',
+            borderRadius: '14px',
+            background: freighterConnected ? 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)' : 'rgba(255,255,255,0.06)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: freighterConnected ? '#040D1A' : 'var(--text-muted)',
-            boxShadow: freighterConnected ? '0 0 20px rgba(6, 182, 212, 0.3)' : 'none'
+            boxShadow: freighterConnected ? '0 0 24px rgba(6, 182, 212, 0.35)' : 'none'
           }}>
             <Wallet size={24} />
           </div>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: freighterConnected ? '#06B6D4' : 'var(--text-muted)' }}>
                 {freighterConnected ? 'FREIGHTER WALLET CONNECTED' : 'STELLAR WALLET DISCONNECTED'}
               </span>
@@ -112,79 +110,67 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
                 </span>
               ) : (
                 <span style={{ fontSize: '0.7rem', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}>
-                  Select Connection Method
+                  Select Account
                 </span>
               )}
             </div>
 
-            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', marginTop: '2px' }}>
-              {freighterConnected ? currentDriver : 'Connect wallet to view live balances and parking history'}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          {freighterConnected ? (
-            <>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Meter Rate & On-Chain Balance</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '2px' }}>
-                  <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#10B981' }} title="Stable Fiat Parking Meter Rate Unit ($0.10/min)">
+            {freighterConnected ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '4px' }}>
+                <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'white' }}>
+                  {currentDriver.slice(0, 8)}...{currentDriver.slice(-8)}
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#10B981' }}>
                     ${driverBalance.toFixed(2)} USDC Meter
                   </span>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>|</span>
-                  <span className="mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#06B6D4' }} title="Live Stellar Horizon Testnet Reserve">
-                    {(stellarState.accounts.DRIVER.balanceXLM || 0).toLocaleString()} XLM (Live Testnet)
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
+                  <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#06B6D4' }}>
+                    {(stellarState.accounts.DRIVER.balanceXLM || 0).toLocaleString()} XLM
                   </span>
                 </div>
               </div>
+            ) : (
+              <div style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                Connect wallet to open live metered sessions on Stellar Horizon Testnet
+              </div>
+            )}
+          </div>
+        </div>
 
-              <a
-                href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title="View Account on Stellar Expert"
-                style={{
-                  background: 'rgba(6, 182, 212, 0.1)',
-                  border: '1px solid rgba(6, 182, 212, 0.3)',
-                  color: '#06B6D4',
-                  padding: '8px 14px',
-                  borderRadius: '10px',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  textDecoration: 'none'
-                }}
-              >
-                <span>Stellar Expert</span>
-                <ExternalLink size={14} />
-              </a>
-            </>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {freighterConnected ? (
+            <a
+              href={`https://stellar.expert/explorer/testnet/account/${currentDriver}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '10px 16px', borderRadius: '10px', textDecoration: 'none' }}
+            >
+              <span>Stellar Expert</span>
+              <ExternalLink size={14} />
+            </a>
           ) : (
             <button
               onClick={async () => {
                 await stellarState.connectFreighter();
               }}
-              style={{
-                background: 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)',
-                color: '#040D1A',
-                fontWeight: 800,
-                fontSize: '0.85rem',
-                padding: '10px 20px',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 15px rgba(6, 182, 212, 0.3)',
-                cursor: 'pointer'
-              }}
+              className="btn-secondary"
+              style={{ fontSize: '0.8rem', padding: '10px 16px', borderRadius: '10px' }}
             >
-              <Wallet size={16} color="#040D1A" />
+              <Wallet size={16} />
               <span>Connect Wallet</span>
             </button>
           )}
+
+          <button
+            className="btn-primary"
+            onClick={onOpenScanner}
+            style={{ fontSize: '0.88rem', padding: '10px 20px', borderRadius: '10px' }}
+          >
+            <QrCode size={18} />
+            <span>Scan Gate QR</span>
+          </button>
         </div>
       </div>
 
@@ -194,58 +180,27 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
           background: 'rgba(244, 63, 94, 0.15)',
           border: '1px solid rgba(244, 63, 94, 0.4)',
           borderRadius: '12px',
-          padding: '16px 20px',
+          padding: '14px 18px',
           marginBottom: '24px',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           color: '#FDA4AF'
         }}>
-          <AlertCircle size={20} color="#F43F5E" />
-          <div style={{ flex: 1, fontSize: '0.9rem' }}>{errorMsg}</div>
+          <AlertCircle size={18} color="#F43F5E" />
+          <div style={{ flex: 1, fontSize: '0.88rem' }}>{errorMsg}</div>
           <button onClick={() => setErrorMsg('')} style={{ background: 'transparent', color: '#FDA4AF', fontWeight: 700 }}>✕</button>
         </div>
       )}
 
-      {/* Active Session Parking Meter or Entry Banner */}
-      {activeSession ? (
-        <ParkingMeter
-          session={activeSession}
-          onEndSession={handleEndSession}
-          loading={loading}
-        />
-      ) : (
-        <div className="glass-panel animate-fade-in" style={{
-          padding: '36px',
-          marginBottom: '40px',
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
-          border: '1px solid var(--border-glow)',
-          boxShadow: '0 0 30px rgba(0, 242, 254, 0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '24px'
-        }}>
-          <div style={{ maxWidth: '600px' }}>
-            <span className="pulse-badge" style={{ background: 'rgba(0, 242, 254, 0.12)', color: 'var(--color-cyan)', border: '1px solid rgba(0, 242, 254, 0.3)', marginBottom: '12px' }}>
-              <Sparkles size={12} /> Ready to Park
-            </span>
-            <h2 style={{ fontSize: '1.8rem', fontWeight: 800, margin: '8px 0 12px', letterSpacing: '-0.02em' }}>
-              Scan Gate QR to Start Per-Minute Parking
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6 }}>
-              No cash, no overcharging. Scan the entry barrier QR code to open an instant metered session on Stellar. Settled in USDC directly from your Freighter wallet to the parking operator's vault upon exit.
-            </p>
-          </div>
-
-          <button
-            className="btn-primary"
-            onClick={onOpenScanner}
-            style={{ fontSize: '1.05rem', padding: '16px 32px', borderRadius: '14px' }}
-          >
-            <QrCode size={22} /> Scan Gate QR Code
-          </button>
+      {/* Active Session Meter (if session is in progress) */}
+      {activeSession && (
+        <div style={{ marginBottom: '32px' }}>
+          <ParkingMeter
+            session={activeSession}
+            onEndSession={handleEndSession}
+            loading={loading}
+          />
         </div>
       )}
 
