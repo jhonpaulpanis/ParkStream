@@ -69,55 +69,55 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px 48px' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 60px' }}>
 
-      {/* Integrated Wallet & Gate QR Control Bar */}
+      {/* Integrated Wallet & Gate QR Control Bar (Google Stitch Material 3) */}
       <div className="glass-panel animate-fade-in" style={{
-        padding: '24px 28px',
-        marginBottom: '32px',
-        background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.75) 100%)',
-        border: '1px solid rgba(6, 182, 212, 0.25)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+        padding: '26px 32px',
+        marginBottom: '36px',
+        background: 'var(--bg-stitch-card)',
+        border: '1px solid var(--border-subtle)',
+        borderRadius: '28px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '20px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '14px',
-            background: freighterConnected ? 'linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%)' : 'rgba(255,255,255,0.06)',
+            width: '52px',
+            height: '52px',
+            borderRadius: '50%',
+            background: freighterConnected ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+            border: freighterConnected ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid var(--border-subtle)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: freighterConnected ? '#040D1A' : 'var(--text-muted)',
-            boxShadow: freighterConnected ? '0 0 24px rgba(6, 182, 212, 0.35)' : 'none'
+            color: freighterConnected ? '#38BDF8' : 'var(--text-muted)'
           }}>
             <Wallet size={24} />
           </div>
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: freighterConnected ? '#06B6D4' : 'var(--text-muted)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: freighterConnected ? '#38BDF8' : 'var(--text-muted)' }}>
                 {freighterConnected ? 'FREIGHTER WALLET CONNECTED' : 'STELLAR WALLET DISCONNECTED'}
               </span>
               {freighterConnected ? (
-                <span style={{ fontSize: '0.7rem', background: 'rgba(16, 185, 129, 0.15)', color: '#10B981', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.72rem', background: 'rgba(16, 185, 129, 0.15)', color: '#10B981', padding: '2px 10px', borderRadius: '9999px', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 700 }}>
                   Active Account
                 </span>
               ) : (
-                <span style={{ fontSize: '0.7rem', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', padding: '2px 8px', borderRadius: '4px', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}>
-                  Select Account
+                <span style={{ fontSize: '0.72rem', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', padding: '2px 10px', borderRadius: '9999px', border: '1px solid rgba(245, 158, 11, 0.3)', fontWeight: 700 }}>
+                  Select Connection
                 </span>
               )}
             </div>
 
             {freighterConnected ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '4px' }}>
-                <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'white' }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white' }}>
                   {currentDriver.slice(0, 8)}...{currentDriver.slice(-8)}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -125,7 +125,7 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
                     ${driverBalance.toFixed(2)} USDC Meter
                   </span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
-                  <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#06B6D4' }}>
+                  <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#38BDF8' }}>
                     {(stellarState.accounts.DRIVER.balanceXLM || 0).toLocaleString()} XLM
                   </span>
                 </div>
