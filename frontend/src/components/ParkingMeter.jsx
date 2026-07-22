@@ -125,10 +125,10 @@ export default function ParkingMeter({ session, onEndSession, loading }) {
             <Zap size={14} color="var(--color-emerald)" /> Live Streamed Fee (USDC)
           </div>
           <div className="mono gradient-text-emerald" style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '0.02em', marginBottom: '8px' }}>
-            ${streamingCostUSDC.toFixed(6)}
+            ${Number(streamingCostUSDC || 0).toFixed(4)}
           </div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-            Rate: <strong style={{ color: 'white' }}>${ratePerMinUSDC.toFixed(2)} USDC / min</strong> (${(ratePerSecUSDC).toFixed(6)}/sec)
+            Rate: <strong style={{ color: 'white' }}>${Number(ratePerMinUSDC || 0).toFixed(0)} USDC / min</strong> (${Number(ratePerSecUSDC || 0).toFixed(4)}/sec)
           </div>
         </div>
 
@@ -152,10 +152,10 @@ export default function ParkingMeter({ session, onEndSession, loading }) {
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
             <span className="mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-emerald)' }}>
-              ${contractBillUSDC.toFixed(4)} USDC
+              ${Number(contractBillUSDC || 0).toFixed(0)} USDC
             </span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              ({durationMinutes} min @ ${ratePerMinUSDC.toFixed(2)}/min)
+              ({durationMinutes} min @ ${Number(ratePerMinUSDC || 0).toFixed(0)}/min)
             </span>
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function ParkingMeter({ session, onEndSession, loading }) {
             <>Processing Soroban Settlement...</>
           ) : (
             <>
-              <QrCode size={20} /> Scan Exit Gate & Pay ${contractBillUSDC.toFixed(2)} USDC
+              <QrCode size={20} /> Scan Exit Gate & Pay ${Number(contractBillUSDC || 0).toFixed(0)} USDC
             </>
           )}
         </button>

@@ -122,11 +122,11 @@ export default function DriverApp({ onOpenScanner, onSelectReceipt }) {
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#10B981' }}>
-                    ${driverBalance.toFixed(2)} USDC Meter
+                    ${Number(driverBalance || 0).toFixed(2)} USDC Meter
                   </span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>•</span>
                   <span className="mono" style={{ fontSize: '0.95rem', fontWeight: 800, color: '#38BDF8' }}>
-                    {(stellarState.accounts.DRIVER.balanceXLM || 0).toLocaleString()} XLM
+                    {Number(stellarState.accounts.DRIVER.balanceXLM || 0).toLocaleString()} XLM
                   </span>
                 </div>
               </div>

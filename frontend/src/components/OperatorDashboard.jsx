@@ -108,7 +108,7 @@ export default function OperatorDashboard({ onOpenScanner }) {
           <div style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Revenue Collected</div>
             <div className="mono gradient-text-emerald" style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-              ${operatorBalance.toFixed(2)} USDC
+              ${Number(operatorBalance || 0).toFixed(2)} USDC
             </div>
           </div>
         </div>

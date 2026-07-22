@@ -24,7 +24,7 @@ export default function ReceiptModal({ receipt, onClose }) {
     setTimeout(() => setCopiedHash(false), 2000);
   };
 
-  const rateUSDC = (Number(receipt.ratePerMinute) / 10000000).toFixed(2);
+  const rateUSDC = Math.round(Number(receipt.ratePerMinute || 0) / 10000000).toString();
 
   return (
     <div style={{
