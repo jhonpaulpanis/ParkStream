@@ -1,28 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Google Stitch Material 3 Expressive Color Tokens */
-  --bg-stitch-dark: #0D1117;
-  --bg-stitch-surface: #161B22;
-  --bg-stitch-card: rgba(22, 27, 34, 0.85);
-  --bg-stitch-card-hover: rgba(30, 38, 48, 0.95);
-  --bg-stitch-container: rgba(255, 255, 255, 0.04);
+  /* Ultra-Clean High-Contrast Google Stitch Color Tokens */
+  --bg-stitch-dark: #0B0E17;
+  --bg-stitch-surface: #121824;
+  --bg-stitch-card: rgba(18, 24, 36, 0.92);
+  --bg-stitch-card-hover: rgba(26, 34, 50, 0.96);
+  --bg-stitch-container: rgba(255, 255, 255, 0.05);
   
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.12);
-  --border-active: #38BDF8;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.18);
+  --border-active: #00F0FF;
   
-  --color-primary: #38BDF8;
-  --color-primary-soft: rgba(56, 189, 248, 0.12);
+  --color-primary: #00F0FF;
+  --color-primary-gradient: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
   --color-emerald: #10B981;
-  --color-emerald-soft: rgba(16, 185, 129, 0.12);
-  --color-indigo: #6366F1;
+  --color-emerald-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
   --color-purple: #A855F7;
+  --color-amber: #FFB000;
   --color-rose: #F43F5E;
   
-  --text-primary: #F0F6FC;
-  --text-secondary: #8B949E;
-  --text-muted: #6E7681;
+  --text-primary: #FFFFFF;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
   
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -30,11 +30,11 @@
   --glass-backdrop: blur(20px);
   --radius-sm: 12px;
   --radius-md: 18px;
-  --radius-lg: 28px;
+  --radius-lg: 24px;
   --radius-full: 9999px;
   
-  --shadow-stitch-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --shadow-stitch-lg: 0 16px 40px rgba(0, 0, 0, 0.4);
+  --shadow-stitch-sm: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --shadow-stitch-lg: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -62,11 +62,11 @@ body {
   background: var(--bg-stitch-dark);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 button {
@@ -86,7 +86,7 @@ input, select, textarea {
   font-family: var(--font-mono);
 }
 
-/* Stitch Material 3 Card Container */
+/* Stitch Card Container */
 .glass-panel {
   background: var(--bg-stitch-card);
   backdrop-filter: var(--glass-backdrop);
@@ -104,34 +104,34 @@ input, select, textarea {
   box-shadow: var(--shadow-stitch-lg);
 }
 
-/* Clean Google Stitch Pill Buttons */
+/* Crisp Clean Buttons */
 .btn-primary {
-  background: #38BDF8;
-  color: #0D1117;
-  font-weight: 700;
+  background: var(--color-primary-gradient);
+  color: #040D1A;
+  font-weight: 800;
   font-size: 0.88rem;
-  padding: 10px 22px;
+  padding: 10px 24px;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   gap: 8px;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 240, 255, 0.3);
 }
 .btn-primary:hover {
-  background: #7DD3FC;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 6px 24px rgba(0, 240, 254, 0.5);
+  filter: brightness(1.08);
 }
 .btn-primary:active {
   transform: translateY(0);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
   border: 1px solid var(--border-subtle);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.88rem;
   padding: 10px 22px;
   border-radius: var(--radius-full);
@@ -141,78 +141,34 @@ input, select, textarea {
   justify-content: center;
 }
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
   border-color: var(--border-light);
 }
 
 .btn-emerald {
-  background: #10B981;
+  background: var(--color-emerald-gradient);
   color: #04140B;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.88rem;
-  padding: 10px 22px;
+  padding: 10px 24px;
   border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   gap: 8px;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
-}
-.btn-emerald:hover {
-  background: #34D399;
-  transform: translateY(-1px);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.btn-emerald {
-  background: linear-gradient(135deg, #00E676 0%, #00B0FF 100%);
-  color: #04140B;
-  font-weight: 700;
-  padding: 12px 24px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 20px rgba(0, 230, 118, 0.3);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
 }
 .btn-emerald:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 25px rgba(0, 230, 118, 0.5);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-primary);
-  border: 1px solid var(--border-subtle);
-  font-weight: 600;
-  padding: 10px 20px;
-  border-radius: var(--radius-md);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
 }
 
 .btn-danger {
   background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
   color: white;
   font-weight: 700;
-  padding: 12px 24px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 20px rgba(244, 63, 94, 0.3);
+  padding: 10px 22px;
+  border-radius: var(--radius-full);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -220,50 +176,11 @@ input, select, textarea {
 }
 .btn-danger:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 25px rgba(244, 63, 94, 0.5);
-}
-
-/* Pulsing Badge */
-.pulse-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.pulse-badge.active {
-  background: rgba(0, 230, 118, 0.15);
-  color: #00E676;
-  border: 1px solid rgba(0, 230, 118, 0.3);
-}
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: currentColor;
-  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-
-@keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 8px rgba(0, 230, 118, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0);
-  }
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -281,26 +198,26 @@ input, select, textarea {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--color-cyan), transparent);
-  box-shadow: 0 0 15px var(--color-cyan);
+  background: linear-gradient(90deg, transparent, #00F0FF, transparent);
+  box-shadow: 0 0 15px #00F0FF;
   animation: scanline 2.5s ease-in-out infinite;
 }
 
 /* Text Gradients */
 .gradient-text-cyan {
-  background: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%);
+  background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-text-emerald {
-  background: linear-gradient(135deg, #00E676 0%, #00B0FF 100%);
+  background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-text-purple {
-  background: linear-gradient(135deg, #C084FC 0%, #8B5CF6 100%);
+  background: linear-gradient(135deg, #C084FC 0%, #A855F7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
